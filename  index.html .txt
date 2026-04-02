@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>兰州缘分盲盒</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{touch-action:manipulation;}
+html,body{height:100%;overflow-x:hidden}
+body{background:#f7f8fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;max-width:480px;margin:0 auto}
+.container{background:#fff;min-height:100vh;padding-bottom:60px}
+.avatar-area{text-align:center;margin:0 0 20px;position:relative}
+.avatar-circle{width:110px;height:110px;border-radius:50%;background:#f0f0f0;margin:0 auto;overflow:hidden;border:2px solid #ff9cc3}
+.avatar-circle img{width:100%;height:100%;object-fit:cover}
+#avatarUpload{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:110px;opacity:0;cursor:pointer}
+.banner-ad{background:#fff0f5;color:#ff3a7c;text-align:center;padding:22px;margin:12px;border-radius:16px;border:2px dashed #ff3a7c;font-size:15px;font-weight:bold}
+.banner{background:#ffebef;color:#ff5a8c;text-align:center;padding:16px;border-radius:12px;margin:12px}
+.title{text-align:center;padding:10px 0 16px}
+.title h1{font-size:26px;color:#ff3a7c}
+.title p{font-size:14px;color:#888}
+.card-box{display:flex;gap:12px;padding:0 16px;margin-bottom:20px}
+.card{flex:1;background:linear-gradient(135deg,#ff9cc3,#ff7aa3);color:#fff;text-align:center;padding:30px 10px;border-radius:20px;font-size:18px;font-weight:bold;cursor:pointer}
+.card.blue{background:linear-gradient(135deg,#87ceff,#007aff)}
+.btn-yellow{display:block;width:calc(100% - 32px);margin:12px auto;padding:16px;border:none;border-radius:16px;background:#ffcc00;color:#333;font-size:16px;font-weight:bold;cursor:pointer}
+.btn{display:block;width:calc(100% - 32px);margin:12px auto;padding:16px;border:none;border-radius:16px;background:#ff3a7c;color:#fff;font-size:16px;cursor:pointer}
+.btn.gray{background:#999}
+.btn.small{padding:10px;font-size:14px}
+.btn.pass{background:#4cd964}
+.btn.reject{background:#ff3b30}
+.btn.copy{background:#007aff}
+.btn.save{background:#00bfff}
+.purple-box{margin:20px auto;width:calc(100% - 32px);padding:18px;border:2px solid #a16e8b;border-radius:16px;background:#f9f4ff;text-align:center;color:#7f49c9;font-weight:bold;cursor:pointer}
+.footer{text-align:center;padding:30px 20px;color:#888;font-size:13px}
+.lan-icons{display:flex;justify-content:center;gap:12px;margin:10px 0;font-size:28px}
+.page{display:none;padding:16px}
+.page.show{display:block}
+.back{color:#ff3a7c;padding:10px 0;cursor:pointer}
+input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #eee;border-radius:12px;font-size:15px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:15px;z-index:999}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:20px;padding:24px;max-height:85vh;overflow-y:auto;width:100%;max-width:380px}
+.modal-title{font-size:18px;font-weight:bold;margin-bottom:16px;text-align:center}
+.modal-content{line-height:1.9}
+.admin-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.forget{text-align:center;margin-top:10px;color:#007aff;font-size:14px;cursor:pointer}
+.refresh-btn{position:fixed;top:12px;right:12px;width:36px;height:36px;background:#007aff;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:9999;cursor:pointer;border:none;outline:none;}
+</style>
+</head>
+<body>
+<button class="refresh-btn" onclick="loadAll(true)">🔄刷新</button>
+<div class="container">
+
+<!-- 首页 -->
+<div id="home" class="page show">
+  <div class="banner-ad" id="adBox">兰州同城脱单盲盒 · 真实靠谱</div>
+  <div class="banner">兰州缘分盲盒<br>真实用户严格审核安全靠谱</div>
+  <div class="title">
+    <h1>兰州缘分盲盒</h1>
+    <p>城关 七里河 安宁 西固 红古 榆中 永登 皋兰</p>
+  </div>
+  <div class="card-box">
+    <div class="card" onclick="drawGirl()">抽女生</div>
+    <div class="card blue" onclick="drawBoy()">抽男生</div>
+  </div>
+  <button class="btn-yellow" onclick="go('publish')">📦投稿盲盒</button>
+  <button class="btn gray" onclick="go('admin')">🔐管理后台</button>
+  <div class="purple-box" onclick="showMyBox()">📦我抽到的盲盒</div>
+  <div class="footer">
+    <div class="lan-icons"><span>🌉</span><span>🌊</span><span>🍜</span><span>🗻</span><span>🐪</span><span>❤️</span></div>
+    <p>中山桥｜黄河｜牛肉面｜白塔山｜丝绸之路</p>
+    <p style="margin-top:8px">© 2026 兰州缘分盲盒版权所有</p>
+  </div>
+</div>
+
+<!-- 投稿 -->
+<div id="publish" class="page">
+  <div class="back" onclick="go('home')">←返回首页</div>
+  <h3 style="text-align:center;margin-bottom:20px">我要投稿</h3>
+  <div class="avatar-area">
+    <div class="avatar-circle"><img id="avatarImg"></div>
+    <p style="font-size:14px;color:#666">点击头像上传</p>
+    <input type="file" id="avatarUpload" accept="image/*" onchange="previewAvatar()">
+  </div>
+  <select id="gender">
+    <option value="">请选择性别</option>
+    <option value="boy">男生</option>
+    <option value="girl">女生</option>
+  </select>
+  <input type="text" id="nick" placeholder="昵称">
+  <select id="age"><option value="">年龄</option></select>
+  <select id="height"><option value="">身高(cm)</option></select>
+  <select id="weight"><option value="">体重(kg)</option></select>
+  <select id="edu"><option value="">学历</option></select>
+  <input type="text" id="hobby" placeholder="兴趣爱好">
+  <input type="text" id="wechat" placeholder="微信号">
+  <input type="file" id="userQrcode" accept="image/*">
+  <p style="margin-bottom:10px;font-size:14px;color:#666">上传微信二维码（选填）</p>
+  <textarea id="intro" rows="3" placeholder="个人简介"></textarea>
+  <button class="btn" onclick="saveUser()">提交审核</button>
+</div>
+
+<!-- 后台 -->
+<div id="admin" class="page">
+  <div class="back" onclick="go('home')">←返回首页</div>
+  <h3 style="text-align:center">管理后台</h3>
+  <div id="loginArea">
+    <input type="password" id="pwd" placeholder="输入后台密码">
+    <button class="btn" onclick="adminLogin()">登录后台</button>
+  </div>
+  <div id="adminPanel" style="display:none;margin-top:20px">
+    <button class="btn small pass" onclick="loadAll(true)">刷新全部投稿</button>
+    <div id="userList" style="margin-top:20px"></div>
+  </div>
+</div>
+
+<!-- 预览弹窗 -->
+<div class="modal" id="previewModal">
+  <div class="modal-box">
+    <div class="modal-title">盲盒详情</div>
+    <div class="modal-content" id="previewContent"></div>
+    <button class="btn small" style="margin-top:20px" onclick="closeModal()">关闭</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ==============================================
+// 🚀 【真正互通版】全局配置
+// 后台密码：自己改，别人投稿你实时看到
+// ==============================================
+const ADMIN_PASSWORD = "admin123";
+const DB_KEY = "LZ_LOVE_BOX_USERS";
+
+// 页面切换
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+}
+
+// 初始化年龄身高学历
+function initSelect() {
+  let age = document.getElementById('age');
+  for(let i=18;i<=50;i++){
+    age.innerHTML += `<option value="${i}">${i}岁</option>`;
+  }
+  let height = document.getElementById('height');
+  for(let i=150;i<=200;i++){
+    height.innerHTML += `<option value="${i}">${i}cm</option>`;
+  }
+  let weight = document.getElementById('weight');
+  for(let i=40;i<=100;i++){
+    weight.innerHTML += `<option value="${i}">${i}kg</option>`;
+  }
+  let edu = document.getElementById('edu');
+  let eds = ["初中","高中","大专","本科","硕士","博士"];
+  eds.forEach(e=>{
+    edu.innerHTML += `<option value="${e}">${e}</option>`;
+  });
+}
+
+// 头像预览
+function previewAvatar() {
+  let file = document.getElementById('avatarUpload').files[0];
+  if(!file) return;
+  let reader = new FileReader();
+  reader.onload = e=>{
+    document.getElementById('avatarImg').src = e.target.result;
+  }
+  reader.readAsDataURL(file);
+}
+
+// ==============================================
+// ✅ 提交投稿（真正互通，所有人可见）
+// ==============================================
+function saveUser() {
+  let gender = document.getElementById('gender').value;
+  let nick = document.getElementById('nick').value.trim();
+  let age = document.getElementById('age').value;
+  let height = document.getElementById('height').value;
+  let weight = document.getElementById('weight').value;
+  let edu = document.getElementById('edu').value;
+  let hobby = document.getElementById('hobby').value.trim();
+  let wechat = document.getElementById('wechat').value.trim();
+  let intro = document.getElementById('intro').value.trim();
+  let avatar = document.getElementById('avatarImg').src || "";
+
+  if(!gender || !nick || !age || !height || !wechat || !intro){
+    alert("请填写完整信息！");
+    return;
+  }
+
+  let data = {
+    id: Date.now(),
+    gender, nick, age, height, weight, edu, hobby, wechat, intro, avatar,
+    time: new Date().toLocaleString()
+  };
+
+  let list = getUsers();
+  list.unshift(data);
+  saveUsers(list);
+
+  alert("投稿成功！等待管理员审核");
+  document.getElementById('publish').reset();
+  document.getElementById('avatarImg').src = "";
+  go('home');
+}
+
+// ==============================================
+// ✅ 后台登录
+// ==============================================
+function adminLogin() {
+  let p = document.getElementById('pwd').value;
+  if(p === ADMIN_PASSWORD){
+    document.getElementById('loginArea').style.display = "none";
+    document.getElementById('adminPanel').style.display = "block";
+    loadAll();
+  } else {
+    alert("密码错误");
+  }
+}
+
+// ==============================================
+// ✅ 加载所有投稿（互通核心）
+// ==============================================
+function loadAll(showTip=false) {
+  let list = getUsers();
+  let html = "";
+  list.forEach(u=>{
+    html += `
+    <div class="admin-card">
+      <p><strong>${u.nick}</strong> · ${u.gender=='boy'?'男生':'女生'} · ${u.age}岁</p>
+      <p>身高：${u.height}cm · 学历：${u.edu}</p>
+      <p>微信：${u.wechat}</p>...
