@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>兰州缘分盲盒</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{background:#f7f8fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;max-width:480px;margin:0 auto}
+.container{background:#fff;min-height:100vh;padding-bottom:60px}
+.avatar-area{text-align:center;margin:0 0 20px;position:relative}
+.avatar-circle{width:110px;height:110px;border-radius:50%;background:#f0f0f0;margin:0 auto;overflow:hidden;border:2px solid #ff9cc3}
+.avatar-circle img{width:100%;height:100%;object-fit:cover}
+#avatarUpload{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:110px;opacity:0;cursor:pointer}
+.banner-ad{background:#fff0f5;color:#ff3a7c;text-align:center;padding:22px;margin:12px;border-radius:16px;border:2px dashed #ff3a7c;font-size:15px;font-weight:bold}
+.banner{background:#ffebef;color:#ff5a8c;text-align:center;padding:16px;border-radius:12px;margin:12px}
+.title{text-align:center;padding:10px 0 16px}
+.title h1{font-size:26px;color:#ff3a7c}
+.title p{font-size:14px;color:#888}
+.card-box{display:flex;gap:12px;padding:0 16px;margin-bottom:20px}
+.card{flex:1;background:linear-gradient(135deg,#ff9cc3,#ff7aa3);color:#fff;text-align:center;padding:30px 10px;border-radius:20px;font-size:18px;font-weight:bold;cursor:pointer}
+.card.blue{background:linear-gradient(135deg,#87ceff,#007aff)}
+.btn-yellow{display:block;width:calc(100% - 32px);margin:12px auto;padding:16px;border:none;border-radius:16px;background:#ffcc00;color:#333;font-size:16px;font-weight:bold;cursor:pointer}
+.btn{display:block;width:calc(100% - 32px);margin:12px auto;padding:16px;border:none;border-radius:16px;background:#ff3a7c;color:#fff;font-size:16px;cursor:pointer}
+.btn.gray{background:#999}
+.btn.small{padding:10px;font-size:14px}
+.btn.pass{background:#4cd964}
+.btn.reject{background:#ff3b30}
+.btn.copy{background:#007aff}
+.btn.save{background:#00bfff}
+.purple-box{margin:20px auto;width:calc(100% - 32px);padding:18px;border:2px solid #a16e8;border-radius:16px;background:#f9f4ff;text-align:center;color:#7f49c9;font-weight:bold;cursor:pointer}
+.footer{text-align:center;padding:30px 20px;color:#888;font-size:13px}
+.lan-icons{display:flex;justify-content:center;gap:12px;margin:10px 0;font-size:28px}
+.page{display:none;padding:16px}
+.page.show{display:block}
+.back{color:#ff3a7c;padding:10px 0;cursor:pointer}
+input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #eee;border-radius:12px;font-size:15px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:15px;z-index:999}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:20px;padding:24px;max-height:85vh;overflow-y:auto;width:100%;max-width:380px}
+.modal-title{font-size:18px;font-weight:bold;margin-bottom:16px;text-align:center}
+.modal-content{line-height:1.9}
+.admin-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.forget{text-align:center;margin-top:10px;color:#007aff;font-size:14px;cursor:pointer}
+.refresh-btn{position:fixed;top:12px;right:12px;width:36px;height:36px;background:#007aff;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:9999;cursor:pointer;border:none;outline:none;}
+</style>
+</head>
+<body>
+<button class="refresh-btn" onclick="loadAll(true)">🔄</button>
+<div class="container">
+
+<div id="home" class="page show">
+<div class="banner-ad" id="adBox">广告位</div>
+<div class="banner">兰州缘分高品质盲盒<br>真实用户严格审核安全靠谱</div>
+<div class="title">
+<h1>兰州缘分盲盒</h1>
+<p>城关 七里河 安宁 西固 红古 榆中 永登 皋兰</p>
+</div>
+<div class="card-box">
+<div class="card" ontouchend="drawGirl()" onclick="drawGirl()">抽女生</div>
+<div class="card blue" ontouchend="drawBoy()" onclick="drawBoy()">抽男生</div>
+</div>
+<button class="btn-yellow" ontouchend="go('publish')" onclick="go('publish')">📦投稿盲盒</button>
+<button class="btn gray" ontouchend="go('admin')" onclick="go('admin')">🔐管理后台</button>
+<div class="purple-box" ontouchend="showMyBox()" onclick="showMyBox()">📦我抽到的盲盒</div>
+<div class="footer">
+<div class="lan-icons"><span>🌉</span><span>🌊</span><span>🍜</span><span>🗻</span><span>🐪</span><span>❤️</span></div>
+<p>中山桥｜黄河｜牛肉面｜白塔山｜丝绸之路｜读者</p>
+<p style="margin-top:8px">© 2026 兰州缘分盲盒版权所有</p>
+</div>
+</div>
+
+<div id="publish" class="page">
+<div class="back" ontouchend="go('home')" onclick="go('home')">←返回首页</div>
+<h3 style="text-align:center;margin-bottom:20px">我要投稿</h3>
+<div class="avatar-area">
+<div class="avatar-circle"><img id="avatarImg"></div>
+<p style="font-size:14px;color:#666">点击头像上传</p>
+<input type="file" id="avatarUpload" accept="image/*" onchange="previewAvatar()">
+</div>
+<select id="gender">
+<option value="">请选择性别</option>
+<option value="boy">男生</option>
+<option value="girl">女生</option>
+</select>
+<input type="text" id="nick" placeholder="昵称">
+<select id="age"><option value="">年龄</option></select>
+<select id="height"><option value="">身高(cm)</option></select>
+<select id="weight"><option value="">体重(kg)</option></select>
+<select id="edu"><option value="">学历</option></select>
+<input type="text" id="hobby" placeholder="兴趣爱好">
+<input type="text" id="wechat" placeholder="微信号">
+<input type="file" id="userQrcode" accept="image/*">
+<p>上传微信二维码（选填）</p>
+<textarea id="intro" rows="3" placeholder="个人简介"></textarea>
+<button class="btn" ontouchend="saveUser()" onclick="saveUser()">提交审核</button>
+</div>
+
+<div id="admin" class="page">
+<div class="back" ontouchend="go('home')" onclick="go('home')">←返回首页</div>
+<h3 style="text-align:center">管理后台</h3>
+<div id="loginArea">
+<input type="password" id="pwd" placeholder="输入后台密码">
+<button class="btn" ontouchend="login()" onclick="login()">登录</button>
+<div class="forget" ontouchend="forgetPwd()" onclick="forgetPwd()">忘记密码</div>
+</div>
+<div id="adminMenu" style="display:none;margin-top:20px">
+<button class="btn small" ontouchend="go('adSet')" onclick="go('adSet')">📢广告设置</button>
+<button class="btn small" ontouchend="go('qrSet')" onclick="go('qrSet')">🖼️站长二维码</button>
+<button class="btn small" ontouchend="go('userList')" onclick="go('userList')">👤用户资料管理</button>
+<button class="btn small" ontouchend="go('check')" onclick="go('check')">✅投稿审核</button>
+<button class="btn small" ontouchend="go('rejectList')" onclick="go('rejectList')">❌不通过记录</button>
+<button class="btn small" ontouchend="resetPwd()" onclick="resetPwd()">修改密码</button>
+<button class="btn small" ontouchend="logout()" onclick="logout()">🚪退出登录</button>
+</div>
+</div>
+
+<div id="adSet" class="page">
+<div class="back" ontouchend="go('admin')" onclick="go('admin')">←</div>
+<h3>广告设置</h3>
+<textarea id="adContent" rows="4"></textarea>
+<button class="btn" ontouchend="saveAd()" onclick="saveAd()">保存广告</button>
+<button class="btn gray" ontouchend="delAd()" onclick="delAd()">删除广告</button>
+</div>
+
+<div id="qrSet" class="page">
+<div class="back" ontouchend="go('admin')" onclick="go('admin')">←</div>
+<h3>站长二维码</h3>
+<input type="file" id="adminQrcode" accept="image/*">
+<button class="btn" ontouchend="uploadAdminQrcode()" onclick="uploadAdminQrcode()">上传</button>
+<button class="btn gray" ontouchend="delAdminQrcode()" onclick="delAdminQrcode()">删除</button>
+<img id="adminQrcodeImg" style="width:120px;margin-top:10px">
+</div>
+
+<div id="userList" class="page">
+<div class="back" ontouchend="go('admin')" onclick="go('admin')">←</div>
+<h3>用户资料管理</h3>
+<div id="userBox"></div>
+</div>
+
+<div id="check" class="page">
+<div class="back" ontouchend="go('admin')" onclick="go('admin')">←</div>
+<h3>投稿审核</h3>
+<div id="checkBox"></div>
+</div>
+
+<div id="rejectList" class="page">
+<div class="back" ontouchend="go('admin')" onclick="go('admin')">←</div>
+<h3>不通过记录</h3>
+<div id="rejBox"></div>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+<div class="modal-title">盲盒详情</div>
+<div class="modal-content" id="modalContent"></div>
+<button class="btn copy" ontouchend="copyWechat()" onclick="copyWechat()">复制微信</button>
+<button class="btn save" ontouchend="saveQrcode()" onclick="saveQrcode()">保存二维码</button>
+<button class="btn" ontouchend="closeModal()" onclick="closeModal()">关闭</button>
+</div>
+</div>
+</div>
+
+<script>
+const CLOUD_LIST = [
+{ url: "https://api.jsonbin.io/v3/b/66351d8fe41b4d34e4a9e1d3", key: "$2a$10$Eex8TtEAFnVQu5QaKwDh7u" },
+{ url: "https://api.jsonbin.io/v3/b/66345a73e41b4d34e4a8a331", key: "$2a$10$QZJZJZJZJZJZJZJZJZJZJu" },
+];
+let currentCloud = null;
+let users = [];
+let myBox = null;
+
+function getLocalUsers() {
+return JSON.parse(localStorage.getItem('lan_users') || '[]');
+}
+function setLocalUsers(list) {
+localStorage.setItem('lan_users', JSON.stringify(list));
+}
+
+async function selectWorkingCloud() {
+for (let cfg of CLOUD_LIST) {
+try {
+let res = await fetch(cfg.url, { headers: { "X-Access-Key": cfg.key } });
+if (res.ok) { currentCloud = cfg; return true; }
+} catch (e) {}
+}
+return false;
+}
+
+async function loadUsers(force = false) {
+if (!force && users.length > 0) return users;
+try {
+if (!currentCloud) await selectWorkingCloud();
+if (currentCloud) {
+let res = await fetch(currentCloud.url, { headers: { "X-Access-Key": currentCloud.key } });
+let data = await res.json();
+users = data.record?.users || [];
+}
+} catch (e) {}
+if (!users || users.length === 0) {
+users = getLocalUsers();
+}
+return users;
+}
+
+async function saveUsers() {
+setLocalUsers(users);
+if (currentCloud) {
+try {
+await fetch(currentCloud.url, {
+method: 'PUT',
+headers: {
+"Content-Type": "application/json",
+"X-Access-Key": currentCloud.key
+},
+body: JSON.stringify({ users })
+});
+} catch (e) {}
+}
+}
+
+function go(id) {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+document.getElementById(id).classList.add('show');
+}
+function closeModal() {
+document.getElementById('modal').classList.remove('show');
+}
+
+const RANDOM_AVATARS = [
+"https://picsum.photos/id/64/100/100",
+"https://picsum.photos/id/65/100/100",
+"https://picsum.photos/id/91/100/100",
+"https://picsum.photos/id/177/100/100",
+"https://picsum.photos/id/237/100/100"
+];
+function getRandomAvatar() {
+return RANDOM_AVATARS[Math.floor(Math.random() * RANDOM_AVATARS.length)];
+}
+
+function initOpts() {
+let a = document.getElementById('age'); for (let i = 16; i <= 60; i++) { let o = document.createElement('option'); o.value = i + '岁'; o.innerText = i + '岁'; a.appendChild(o) }
+let h = document.getElementById('height'); for (let i = 140; i <= 200; i++) { let o = document.createElement('option'); o.value = i + 'cm'; o.innerText = i + 'cm'; h.appendChild(o) }
+let w = document.getElementById('weight'); for (let i = 30; i <= 100; i++) { let o = document.createElement('option'); o.value = i + 'kg'; o.innerText = i + 'kg'; w.appendChild(o) }
+let e = document.getElementById('edu'); ['小学', '初中', '高中', '大专', '本科', '硕士', '研究生'].forEach(x => { let o = document.createElement('option'); o.value = x; o.innerText = x; e.appendChild(o) })
+}
+
+function getPwd1() { return '050928' }
+function getPwd2() { return '6325178' }
+function login() {
+let val = document.getElementById('pwd').value;
+if (val == getPwd1() || val == getPwd2()) {
+loginSucc();
+} else {
+alert('密码错误');
+}
+}
+function forgetPwd() {
+alert('密码：050928 或 6325178');
+}
+function resetPwd() {
+alert('密码固定：050928 / 6325178');
+}
+function loginSucc() {
+localStorage.setItem('isAdmin', 'ok');
+document.getElementById('loginArea').style.display = 'none';
+document.getElementById('adminMenu').style.display = 'block';
+loadAll(true);
+}
+function logout() {
+localStorage.removeItem('isAdmin');
+location.reload();
+}
+function checkAdmin() {
+if (localStorage.getItem('isAdmin') == 'ok') {
+document.getElementById('loginArea').style.display = 'none';
+document.getElementById('adminMenu').style.display = 'block';
+}
+}
+
+function loadAd() {
+document.getElementById('adBox').innerText = localStorage.getItem('ad') || '广告位';
+}
+function saveAd() {
+localStorage.setItem('ad', document.getElementById('adContent').value);
+alert('保存成功');
+go('admin');
+}
+function delAd() {
+localStorage.removeItem('ad');
+alert('已删除');
+go('admin');
+}
+
+async function drawGirl() {
+await loadUsers();
+let list = users.filter(u => u.status == 'passed' && u.gender == 'girl');
+if (!list.length) { alert('暂无女生盲盒'); return; }
+myBox = list[Math.floor(Math.random() * list.length)];
+showBox();
+}
+async function drawBoy() {
+await loadUsers();
+let list = users.filter(u => u.status == 'passed' && u.gender == 'boy');
+if (!list.length) { alert('暂无男生盲盒'); return; }
+myBox = list[Math.floor(Math.random() * list.length)];
+showBox();
+}
+
+function showBox() {
+let u = myBox;
+let avatar = u.avatar || getRandomAvatar();
+let html = `<img src="${avatar}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:10px"><br>`;
+html += `昵称：${u.nick}<br>性别：${u.gender == 'boy' ? '男生' : '女生'}<br>年龄：${u.age || '-'}<br>身高：${u.height || '-'}<br>体重：${u.weight || '-'}<br>学历：${u.edu || '-'}<br>爱好：${u.hobby || '-'}<br>微信：${u.wechat}<br>简介：${u.intro || '-'}`;
+if (u.qrcode) { html += `<br><img src="${u.qrcode}" style="width:120px;margin-top:10px">` }
+document.getElementById('modalContent').innerHTML = html;
+document.getElementById('modal').classList.add('show');
+}
+
+function copyWechat() {
+if (!myBox || !myBox.wechat) { alert('暂无微信号'); return }
+if (navigator.clipboard) {
+navigator.clipboard.writeText(myBox.wechat).then(() => alert('复制成功')).catch(() => alert('微信号：' + myBox.wechat))
+} else {
+alert('微信号：' + myBox.wechat);
+}
+}
+function saveQrcode() {
+if (!myBox || !myBox.qrcode) { alert('无二维码'); return }
+let a = document.createElement('a'); a.href = myBox.qrcode; a.download = 'qrcode.png'; a.click();
+alert('已保存');
+}
+function showMyBox() {
+if (myBox) { showBox() } else { alert('请先抽取盲盒') }
+}
+
+function previewAvatar() {
+let f = document.getElementById('avatarUpload').files[0];
+if (f) {
+document.getElementById('avatarImg').src = URL.createObjectURL(f);
+}
+}
+
+async function saveUser() {
+let g = document.getElementById('gender').value;
+let n = document.getElementById('nick').value.trim();
+let w = document.getElementById('wechat').value.trim();
+if (!g || !n || !w) {
+alert('请完善信息：性别、昵称、微信号不能为空');
+return;
+}
+let user = {
+gender: g, nick: n, wechat: w,
+age: document.getElementById('age').value,
+height: document.getElementById('height').value,
+weight: document.getElementById('weight').value,
+edu: document.getElementById('edu').value,
+hobby: document.getElementById('hobby').value,
+intro: document.getElementById('intro').value,
+status: 'waiting',
+avatar: getRandomAvatar(),
+qrcode: ''
+};
+let avatarFile = document.getElementById('avatarUpload').files[0];
+let qrFile = document.getElementById('userQrcode').files[0];
+
+async function finalSave() {
+await loadUsers();
+users.push(user);
+await saveUsers();
+alert('投稿成功，等待审核');
+go('home');
+}
+
+if (avatarFile) {
+let r = new FileReader();
+r.onload = async function (e) {
+user.avatar = e.target.result;
+if (qrFile) {
+let r2 = new FileReader();
+r2.onload = async function (e2) {
+user.qrcode = e2.target.result;
+await finalSave();
+}
+r2.readAsDataURL(qrFile);
+} else {
+await finalSave();
+}
+}
+r.readAsDataURL(avatarFile);
+} else {
+if (qrFile) {
+let r2 = new FileReader();
+r2.onload = async function (e2) {
+user.qrcode = e2.target.result;
+await finalSave();
+}
+r2.readAsDataURL(qrFile);
+} else {
+await finalSave();
+}
+}
+}
+
+async function pass(i) {
+await loadUsers();
+users[i].status = 'passed';
+await saveUsers();
+await loadCheck();
+}
+async function reject(i) {
+await loadUsers();
+users[i].status = 'rejected';
+await saveUsers();
+await loadCheck();
+}
+async function delUser(i) {
+await loadUsers();
+users.splice(i, 1);
+await saveUsers();
+await loadUser();
+}
+
+async function loadCheck() {
+await loadUsers(true);
+let h = '';
+users.filter(u => u.status == 'waiting').forEach((u, i) => {
+h += `<div class="admin-card">${u.nick} ${u.gender == 'boy' ? '男' : '女'} ${u.wechat}<br>
+<button class="btn small pass" ontouchend="pass(${i})" onclick="pass(${i})">通过</button>
+<button class="btn small reject" ontouchend="reject(${i})" onclick="reject(${i})">不通过</button></div>`;
+});
+document.getElementById('checkBox').innerHTML = h || '<div style="text-align:center;padding:10px">暂无待审核</div>';
+}
+
+async function loadUser() {
+await loadUsers(true);
+let h = '';
+users.forEach((u, i) => {
+h += `<div class="admin-card">${u.nick} ${u.wechat}<br>
+<button class="btn small reject" ontouchend="delUser(${i})" onclick="delUser(${i})">删除</button></div>`;
+});
+document.getElementById('userBox').innerHTML = h;
+}
+
+async function loadRej() {
+await loadUsers(true);
+let h = '';
+users.filter(u => u.status == 'rejected').forEach(u => {
+h += `<div class="admin-card">${u.nick} ${u.wechat}</div>`;
+});
+document.getElementById('rejBox').innerHTML = h;
+}
+
+async function loadAll(force = false) {
+loadAd();
+await loadUsers(force);
+await loadCheck();
+await loadUser();
+await loadRej();
+}
+
+window.onload = async function () {
+initOpts();
+await loadAll();
+checkAdmin();
+}
+</script>
+</body>
+</html>
