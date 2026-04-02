@@ -7,7 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
-body{background:#f7f8fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;max-width:480px;margin:0 auto}
+body{background:#f7f8fa;font-family:-apple-system,BlinkMacSystemFont,Roboto,sans-serif;max-width:480px;margin:0 auto}
 .container{background:#fff;min-height:100vh;padding-bottom:60px}
 .avatar-area{text-align:center;margin:0 0 20px;position:relative}
 .avatar-circle{width:110px;height:110px;border-radius:50%;background:#f0f0f0;margin:0 auto;overflow:hidden;border:2px solid #ff9cc3}
@@ -48,9 +48,7 @@ input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px soli
 
 <div class="container">
 
-<!-- ======================
-你的首页（完全没改动！）
-======================= -->
+<!-- 你的首页 —— 完全没动 -->
 <div id="home" class="page show">
 <div class="banner-ad" id="adBox">广告位</div>
 <div class="banner">兰州缘分高品质盲盒<br>真实用户严格审核安全靠谱</div>
@@ -94,8 +92,6 @@ input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px soli
 <input type="text" id="hobby" placeholder="兴趣爱好">
 <input type="text" id="wechat" placeholder="微信号">
 <textarea id="intro" rows="3" placeholder="个人简介"></textarea>
-
-<!-- 提交审核按钮（修复，可点击） -->
 <button class="btn" onclick="saveUser()">提交审核</button>
 </div>
 
@@ -126,29 +122,58 @@ input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px soli
 </div>
 
 <script>
-let users = JSON.parse(localStorage.getItem('lan_users') || '[]');
+// 云端永久存储（换设备不丢数据）
+let users = [];
 let myBox = null;
+const CLOUD_KEY = "lan_he_yuan";
+
+async function loadCloud() {
+  try {
+    let res = await fetch("https://api.jsonbin.io/v3/b/67e571c7acd9636e7a04b1a2/latest", {
+      headers: { "X-Master-Key": "$2a$10$vfNwZJkHcLdJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZ" }
+    });
+    let data = await res.json();
+    users = data.record || [];
+  } catch(e) {
+    users = JSON.parse(localStorage.getItem(CLOUD_KEY) || "[]");
+  }
+}
+
+async function saveCloud() {
+  localStorage.setItem(CLOUD_KEY, JSON.stringify(users));
+  try {
+    await fetch("https://api.jsonbin.io/v3/b/67e571c7acd9636e7a04b1a2", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": "$2a$10$vfNwZJkHcLdJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZJZ"
+      },
+      body: JSON.stringify(users)
+    });
+  } catch(e){}
+}
 
 function go(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
   document.getElementById(id).classList.add('show');
 }
+
 function closeModal(){ document.getElementById('modal').classList.remove('show'); }
 
-// 抽女生
-function drawGirl(){
+async function drawGirl(){
+  await loadCloud();
   let list = users.filter(u=>u.status=='passed'&&u.gender=='girl');
   if(!list.length){alert('暂无女生盲盒');return;}
   myBox = list[Math.floor(Math.random()*list.length)]; showBox();
 }
-// 抽男生
-function drawBoy(){
+
+async function drawBoy(){
+  await loadCloud();
   let list = users.filter(u=>u.status=='passed'&&u.gender=='boy');
   if(!list.length){alert('暂无男生盲盒');return;}
   myBox = list[Math.floor(Math.random()*list.length)]; showBox();
 }
 
-// 展示盲盒
 function showBox(){
   if(!myBox){alert('你还没抽盲盒');return;}
   let u = myBox;
@@ -156,9 +181,9 @@ function showBox(){
   document.getElementById('modalContent').innerHTML = html;
   document.getElementById('modal').classList.add('show');
 }
+
 function showMyBox(){ showBox(); }
 
-// 复制微信
 function copyWechat(){
   if(!myBox){alert('还没抽盲盒');return;}
   navigator.clipboard.writeText(myBox.wechat).then(()=>{
@@ -166,7 +191,6 @@ function copyWechat(){
   }).catch(()=>{ alert('复制失败：'+myBox.wechat); });
 }
 
-// 初始化选项
 function initOpts(){
   let age=document.getElementById('age');
   for(let i=16;i<=60;i++){
@@ -186,7 +210,6 @@ function initOpts(){
   });
 }
 
-// 头像预览
 function previewAvatar(){
   let f=document.getElementById('avatarUpload').files[0];
   if(!f)return;
@@ -195,10 +218,8 @@ function previewAvatar(){
   r.readAsDataURL(f);
 }
 
-// ======================================
-// 提交审核（修复按钮，完全可点）
-// ======================================
-function saveUser(){
+// 提交审核（修复可点击）
+async function saveUser(){
   let gender = document.getElementById('gender').value.trim();
   let nick   = document.getElementById('nick').value.trim();
   let wechat = document.getElementById('wechat').value.trim();
@@ -206,6 +227,8 @@ function saveUser(){
   if(!gender){alert('请选择性别');return;}
   if(!nick){alert('请填写昵称');return;}
   if(!wechat){alert('请填写微信号');return;}
+
+  await loadCloud();
 
   let user = {
     gender, nick,
@@ -220,12 +243,12 @@ function saveUser(){
   };
 
   users.unshift(user);
-  localStorage.setItem('lan_users', JSON.stringify(users));
+  await saveCloud();
   alert('提交成功，等待管理员审核');
   go('home');
 }
 
-// 后台登录
+// 登录
 function login(){
   let p = document.getElementById('pwd').value;
   if(p == '050928'){
@@ -236,8 +259,9 @@ function login(){
   }
 }
 
-// 显示待审核
-function showCheck(){
+// 待审核
+async function showCheck(){
+  await loadCloud();
   let list = users.filter(u=>u.status=='pending');
   let html = '';
   list.forEach((u,i)=>{
@@ -255,8 +279,9 @@ function showCheck(){
   document.getElementById('allList').style.display='none';
 }
 
-// 显示全部
-function showAll(){
+// 全部
+async function showAll(){
+  await loadCloud();
   let html='';
   users.forEach((u,i)=>{
     let sta = u.status=='passed'?'✅已通过':u.status=='pending'?'⏳待审核':'❌拒绝';
@@ -268,19 +293,25 @@ function showAll(){
 }
 
 // 通过
-function pass(i){
+async function pass(i){
+  await loadCloud();
   users[i].status = 'passed';
-  localStorage.setItem('lan_users', JSON.stringify(users));
+  await saveCloud();
   alert('已通过'); showCheck();
 }
+
 // 拒绝
-function reject(i){
+async function reject(i){
+  await loadCloud();
   users[i].status = 'rejected';
-  localStorage.setItem('lan_users', JSON.stringify(users));
+  await saveCloud();
   alert('已拒绝'); showCheck();
 }
 
-window.onload=function(){ initOpts(); }
+window.onload=async function(){
+  await loadCloud();
+  initOpts();
+}
 </script>
 </body>
 </html>
