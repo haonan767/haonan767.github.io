@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>兰州缘分盲盒</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#f7fafd;font-family:system-ui, -apple-system, sans-serif;max-width:480px;margin:0 auto}
+.container{padding-bottom:60px}
+
+.free-tip{background:#fff0c4;color:#e04444;text-align:center;padding:10px;margin:10px 12px;border-radius:10px;font-weight:bold}
+.banner-ad{background:#fff0f5;color:#ff3a7c;text-align:center;padding:18px;margin:12px;border-radius:16px;border:2px dashed #ff3a7c}
+.banner{background:#ffebef;color:#ff5a8c;text-align:center;padding:14px;border-radius:12px;margin:12px}
+.title{text-align:center;padding:10px 0}
+.title h1{font-size:24px;color:#ff3a7c;margin-bottom:8px}
+.title p{font-size:13px;color:#888}
+
+.card-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
+.card{background:linear-gradient(135deg,#ff9cc3,#ff7aa3);color:#fff;text-align:center;padding:22px 10px;border-radius:18px;cursor:pointer !important}
+.card.blue{background:linear-gradient(135deg,#87ceff,#007aff)}
+
+.btn{display:block;width:calc(100% - 32px);margin:10px auto;padding:16px;border:none;border-radius:16px;background:#ff3a7c;color:#fff;font-size:16px;cursor:pointer !important}
+.btn:active{transform:scale(.94);background:#e02f60}
+.btn.yellow{background:#ffcc00;color:#333}
+.btn.gray{background:#999}
+.btn.pass{background:#27ae60}
+.btn.reject{background:#e03e3e}
+.btn.del{background:#c92a2a}
+.btn.copy{background:#007aff}
+.btn.save{background:#27ae60}
+.btn:disabled{background:#ccc;cursor:not-allowed !important}
+
+.purple-box{margin:16px auto;width:calc(100% - 32px);padding:16px;border:2px solid #bb8ce0;border-radius:16px;background:#f9f4ff;text-align:center;color:#7d3c98;cursor:pointer !important}
+.purple-box:active{transform:scale(.95)}
+.contact{text-align:center;padding:10px;color:#ff3a7c;font-size:14px}
+.footer{text-align:center;padding:16px;color:#888;font-size:12px}
+
+section{display:none;padding:16px}
+section.active{display:block !important}
+.back{color:#ff3a7c;padding:10px 0;cursor:pointer !important;font-size:16px}
+
+.avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;margin:10px auto;display:block;border:2px solid #ff9cc3}
+.upload-box{text-align:center;margin-bottom:12px}
+.upload-btn{background:#3498db;color:#fff;padding:10px 16px;border-radius:10px;display:inline-block;cursor:pointer !important}
+
+select,input,textarea{width:100%;padding:14px;border-radius:12px;margin-bottom:12px;border:1px solid #ddd;font-size:15px}
+textarea{resize:none;height:80px}
+
+.slide-group{margin-bottom:12px}
+.slide-header{padding:14px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:15px;cursor:pointer !important}
+.slide-content{display:none;margin-top:8px}
+.slide-wrap{display:flex;overflow-x:auto;gap:8px;padding:8px 0}
+.slide-item{padding:10px 12px;background:#fff;border:1px solid #ddd;border-radius:10px;white-space:nowrap;font-size:14px;min-width:60px;text-align:center;cursor:pointer !important}
+.slide-item.active{background:#ff3a7c;color:#fff}
+.slide-input{margin-top:8px}
+
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:15px;z-index:999}
+.modal.show{display:flex !important}
+.modal-box{background:#fff;border-radius:20px;padding:22px;width:100%;max-width:360px;max-height:85vh;overflow-y:auto}
+.modal-title{text-align:center;font-size:18px;margin-bottom:16px}
+
+.ad-preview-box{border:1px solid #ddd;border-radius:12px;padding:14px;margin-top:12px}
+.ad-preview-box img{max-width:100%;border-radius:8px;margin-top:6px}
+
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}
+
+.hideOnCapture{position:fixed;left:0;top:0;width:100%;height:100%;background:#fff;z-index:999999;display:none}
+</style>
+</head>
+<body>
+
+<div class="hideOnCapture" id="hideLayer"></div>
+
+<div class="container">
+
+<section id="home" class="active">
+  <div class="free-tip">今日免费次数：<span id="freeLeft">3</span></div>
+  <div class="banner-ad" id="homeAd">兰州缘分盲盒欢迎你</div>
+  <div class="banner">兰州缘分盲盒｜真实用户严格审核</div>
+  <div class="title">
+    <h1>兰州缘分盲盒</h1>
+    <p>城关 七里河 安宁 西固 红古 榆中 永登 皋兰</p>
+  </div>
+
+  <div class="card-box">
+    <div class="card" onclick="drawGirl()">抽女生</div>
+    <div class="card blue" onclick="drawBoy()">抽男生</div>
+  </div>
+
+  <button class="btn yellow" onclick="show('publish')">📦 投稿盲盒</button>
+  <button class="btn gray" onclick="show('admin')">🔐 管理后台</button>
+  <div class="purple-box" onclick="showBox()">📦 我抽到的盲盒</div>
+  <button class="btn pass" onclick="previewSelf()">👀 预览我的资料</button>
+
+  <div class="contact">兰州同城交友｜商务合作：19729410115</div>
+
+  <div class="footer">
+    <div>🌉 黄河风情线 🍜 牛肉面 📖 读者</div>
+    <p>© 2026 兰州缘分盲盒 版权所有</p>
+  </div>
+</section>
+
+<section id="publish">
+  <div class="back" onclick="show('home')">← 返回首页</div>
+  <h3 style="text-align:center;margin-bottom:16px">我要投稿</h3>
+
+  <div class="upload-box">
+    <input type="file" id="avatarUpload" accept="image/*" style="display:none">
+    <label for="avatarUpload" class="upload-btn">📷 上传头像</label>
+    <img id="avatarPreview" class="avatar">
+  </div>
+
+  <select id="gender" required>
+    <option value="">请选择性别</option>
+    <option value="boy">男生</option>
+    <option value="girl">女生</option>
+  </select>
+
+  <select id="age" required>
+    <option value="">请选择年龄</option>
+    <option value="16">16岁</option>
+    <option value="17">17岁</option>
+    <option value="18">18岁</option>
+    <option value="19">19岁</option>
+    <option value="20">20岁</option>
+    <option value="21">21岁</option>
+    <option value="22">22岁</option>
+    <option value="23">23岁</option>
+    <option value="24">24岁</option>
+    <option value="25">25岁</option>
+    <option value="26">26岁</option>
+    <option value="27">27岁</option>
+    <option value="28">28岁</option>
+    <option value="29">29岁</option>
+    <option value="30">30岁</option>
+    <option value="31">31岁</option>
+    <option value="32">32岁</option>
+    <option value="33">33岁</option>
+    <option value="34">34岁</option>
+    <option value="35">35岁</option>
+  </select>
+
+  <select id="area" required>
+    <option value="">请选择地区</option>
+    <option value="城关区">城关区</option>
+    <option value="七里河区">七里河区</option>
+    <option value="安宁区">安宁区</option>
+    <option value="西固区">西固区</option>
+    <option value="红古区">红古区</option>
+    <option value="榆中县">榆中县</option>
+    <option value="永登县">永登县</option>
+    <option value="皋兰县">皋兰县</option>
+    <option value="兰州新区">兰州新区</option>
+  </select>
+
+  <select id="edu" required>
+    <option value="">请选择学历</option>
+    <option value="初中">初中</option>
+    <option value="高中">高中</option>
+    <option value="中专">中专</option>
+    <option value="大专">大专</option>
+    <option value="本科">本科</option>
+    <option value="硕士">硕士</option>
+    <option value="博士">博士</option>
+  </select>
+
+  <div class="slide-group">
+    <div class="slide-header" onclick="toggleSlide('heightContent')">请选择身高 (cm)</div>
+    <div class="slide-content" id="heightContent">
+      <div class="slide-wrap" id="heightSlide"></div>
+      <input type="number" class="slide-input" id="heightInput" placeholder="输入身高精准跳转（如：175.5）">
+    </div>
+  </div>
+
+  <div class="slide-group">
+    <div class="slide-header" onclick="toggleSlide('weightContent')">请选择体重 (kg)</div>
+    <div class="slide-content" id="weightContent">
+      <div class="slide-wrap" id="weightSlide"></div>
+      <input type="number" class="slide-input" id="weightInput" placeholder="输入体重精准跳转（如：60.5）">
+    </div>
+  </div>
+
+  <input type="text" id="nick" placeholder="昵称" required>
+  <input type="text" id="wechat" placeholder="微信号" required>
+
+  <textarea id="bio" placeholder="个性签名（一句话介绍自己）"></textarea>
+  <textarea id="hobby" placeholder="兴趣爱好（电影/旅行/健身/美食等）"></textarea>
+
+  <div class="upload-box">
+    <input type="file" id="qrcodeUpload" accept="image/*" style="display:none">
+    <label for="qrcodeUpload" class="upload-btn">📱 上传个人二维码</label>
+    <img id="qrcodePreview" style="width:100px;margin:10px auto;border-radius:10px">
+  </div>
+
+  <div class="upload-box">
+    <input type="file" id="galleryUpload" accept="image/*" multiple style="display:none">
+    <label for="galleryUpload" class="upload-btn">🖼️ 上传个人相册（最多9张）</label>
+    <div id="galleryPreview" class="gallery"></div>
+  </div>
+
+  <button class="btn" id="submitBtn" onclick="submitUser()">提交审核</button>
+</section>
+
+<section id="admin">
+  <div class="back" onclick="show('home')">← 返回首页</div>
+  <h3 style="text-align:center">管理后台</h3>
+  <div id="loginForm" style="margin-top:20px">
+    <input type="password" id="pwd" placeholder="输入管理员密码">
+    <button class="btn" onclick="login()">登录</button>
+  </div>
+  <div id="adminMenu" style="display:none;margin-top:30px">
+    <button class="btn" onclick="show('check')">待审核</button>
+    <button class="btn" onclick="show('users')">用户管理</button>
+    <button class="btn" onclick="show('stat')">数据统计</button>
+    <button class="btn" onclick="show('ad')">广告设置</button>
+    <button class="btn" onclick="show('pay')">收款码</button>
+    <button class="btn gray" onclick="logout()">退出登录</button>
+  </div>
+</section>
+
+<section id="check">
+  <div class="back" onclick="show('admin')">← 返回后台</div>
+  <h3 style="text-align:center;margin:10px">待审核列表</h3>
+  <div id="checkList"></div>
+</section>
+
+<section id="users">
+  <div class="back" onclick="show('admin')">← 返回后台</div>
+  <h3 style="text-align:center;margin:10px">用户管理</h3>
+  <div id="userList"></div>
+</section>
+
+<section id="stat">
+  <div class="back" onclick="show('admin')">← 返回后台</div>
+  <h3 style="text-align:center;margin:10px">数据统计</h3>
+  <div style="background:#f9f9f9;padding:14px;border-radius:12px;line-height:2">
+    <p>总投稿：<span id="total">0</span></p>
+    <p>待审核：<span id="pending">0</span></p>
+    <p>已通过：<span id="passed">0</span></p>
+    <p>收款金额：<span id="money">0</span> 元</p>
+  </div>
+</section>
+
+<section id="ad">
+  <div class="back" onclick="show('admin')">← 返回后台</div>
+  <h3 style="text-align:center;margin:10px">广告设置</h3>
+  <input type="text" id="adText" placeholder="广告文字">
+  <div class="upload-box">
+    <input type="file" id="adImg" accept="image/*" style="display:none">
+    <label for="adImg" class="upload-btn">上传图片</label>
+  </div>
+  <button class="btn pass" onclick="saveAd()">保存广告</button>
+  <div class="ad-preview-box">
+    <strong>广告预览：</strong>
+    <div id="adPreview"></div>
+  </div>
+</section>
+
+<section id="pay">
+  <div class="back" onclick="show('admin')">← 返回后台</div>
+  <h3 style="text-align:center;margin:10px">收款码设置</h3>
+  <div class="upload-box">
+    <input type="file" id="payFile" accept="image/*" style="display:none">
+    <label for="payFile" class="upload-btn">上传收款码</label>
+    <img id="payPreview" style="max-width:180px;margin:20px auto">
+  </div>
+  <button class="btn pass" onclick="savePay()">保存收款码</button>
+</section>
+
+<div class="modal" id="payModal">
+  <div class="modal-box">
+    <div class="modal-title">支付 0.99 元继续</div>
+    <img id="payQrcode" style="max-width:180px;margin:10px auto">
+    <button class="btn pass" onclick="payOk()">已支付</button>
+    <button class="btn gray" onclick="closeModal()">关闭</button>
+  </div>
+</div>
+
+<div class="modal" id="boxModal">
+  <div class="modal-box">
+    <div class="modal-title">盲盒信息</div>
+    <div id="boxInfo" style="padding:14px;text-align:center;max-height:70vh;overflow-y:auto"></div>
+    <button class="btn gray" onclick="closeModal()">关闭</button>
+  </div>
+</div>
+
+<div class="modal" id="previewModal">
+  <div class="modal-box">
+    <div class="modal-title">我的资料预览（别人看到的样子）</div>
+    <div id="previewInfo" style="padding:14px;text-align:center;max-height:70vh;overflow-y:auto"></div>
+    <button class="btn gray" onclick="closeModal()">关闭</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let users = JSON.parse(localStorage.getItem("lz_users")) || [];
+let config = JSON.parse(localStorage.getItem("lz_config")) || {
+  ad:"兰州缘分盲盒欢迎你", adImg:"", pay:"", payCount:0
+};
+let useCount = JSON.parse(localStorage.getItem("lz_useCount")) || 0;
+let sel = { height:"", weight:"" };
+let galleryFiles = [];
+let selfPreview = JSON.parse(localStorage.getItem("lz_selfPreview")) || null;
+
+// 初始化免费次数
+document.getElementById("freeLeft").textContent = Math.max(3 - useCount, 0);
+
+// 生成身高选项
+let hEl = document.getElementById("heightSlide");
+for(let i=140; i<=200; i+=0.5){
+  let d = document.createElement("div");
+  d.className = "slide-item";
+  d.innerText = i;
+  d.onclick = ()=>{
+    document.querySelectorAll("#heightSlide .slide-item").forEach(e=>e.classList.remove("active"));
+    d.classList.add("active");
+    sel.height = i;
+    checkSubmitBtn();
+  };
+  hEl.appendChild(d);
+}
+
+// 生成体重选项
+let wEl = document.getElementById("weightSlide");
+for(let i=30; i<=150; i+=0.5){
+  let d = document.createElement("div");
+  d.className = "slide-item";
+  d.innerText = i;
+  d.onclick = ()=>{
+    document.querySelectorAll("#weightSlide .slide-item").forEach(e=>e.classList.remove("active"));
+    d.classList.add("active");
+    sel.weight = i;
+    checkSubmitBtn();
+  };
+  wEl.appendChild(d);
+}
+
+// 检查提交按钮状态（核心修复）
+function checkSubmitBtn(){
+  const gender = document.getElementById("gender").value;
+  const age = document.getElementById("age").value;
+  const area = document.getElementById("area").value;
+  const edu = document.getElementById("edu").value;
+  const nick = document.getElementById("nick").value.trim();
+  const wechat = document.getElementById("wechat").value.trim();
+  const submitBtn = document.getElementById("submitBtn");
+
+  const isAllFilled = gender && age && area && edu && nick && wechat && sel.height && sel.weight;
+  submitBtn.disabled = !isAllFilled;
+}
+
+// 监听输入，实时检查按钮
+["gender","age","area","edu","nick","wechat"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", checkSubmitBtn);
+});
+
+// 展开/关闭
+function toggleSlide(id){
+  let el = document.getElementById(id);
+  el.style.display = el.style.display=="block" ? "none" : "block";
+}
+
+// 身高输入跳转
+document.getElementById("heightInput").addEventListener("input",function(){
+  let v = parseFloat(this.value);
+  if(!v) return;
+  let items = document.querySelectorAll("#heightSlide .slide-item");
+  items.forEach(it=>{
+    it.classList.remove("active");
+    if(parseFloat(it.innerText)==v){
+      it.classList.add("active");
+      sel.height = v;
+      it.scrollIntoView({behavior:"smooth",inline:"center"});
+      checkSubmitBtn();
+    }
+  });
+});
+
+// 体重输入跳转
+document.getElementById("weightInput").addEventListener("input",function(){
+  let v = parseFloat(this.value);
+  if(!v) return;
+  let items = document.querySelectorAll("#weightSlide .slide-item");
+  items.forEach(it=>{
+    it.classList.remove("active");
+    if(parseFloat(it.innerText)==v){
+      it.classList.add("active");
+      sel.weight = v;
+      it.scrollIntoView({behavior:"smooth",inline:"center"});
+      checkSubmitBtn();
+    }
+  });
+});
+
+// 页面切换
+function show(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if(id==="check") loadCheck();
+  if(id==="users") loadUsers();
+  if(id==="stat") loadStat();
+  if(id==="ad") renderAdPreview();
+}
+
+// 登录
+function login(){
+  if(document.getElementById("pwd").value==="050928"){
+    localStorage.setItem("lz_adminLogin","true");
+    document.getElementById("loginForm").style.display="none";
+    document.getElementById("adminMenu").style.display="block";
+  }else{
+    alert("密码错误");
+  }
+}
+function logout(){
+  localStorage.removeItem("lz_adminLogin");
+  location.reload();
+}
+window.onload = ()=>{
+  if(localStorage.getItem("lz_adminLogin")==="true"){
+    document.getElementById("loginForm").style.display="none";
+    document.getElementById("adminMenu").style.display="block";
+  }
+  renderAdPreview();
+  checkSubmitBtn();
+};
+
+// 头像
+document.getElementById("avatarUpload").onchange = (e)=>{
+  let r = new FileReader();
+  r.onload = ()=> document.getElementById("avatarPreview").src = r.result;
+  r.readAsDataURL(e.target.files[0]);
+};
+
+// 个人二维码
+document.getElementById("qrcodeUpload").onchange = (e)=>{
+  let r = new FileReader();
+  r.onload = ()=> document.getElementById("qrcodePreview").src = r.result;
+  r.readAsDataURL(e.target.files[0]);
+};
+
+// 个人相册
+document.getElementById("galleryUpload").onchange = (e)=>{
+  let files = Array.from(e.target.files).slice(0,9);
+  galleryFiles = [];
+  document.getElementById("galleryPreview").innerHTML = "";
+  files.forEach(file=>{
+    let r = new FileReader();
+    r.onload = ()=>{
+      galleryFiles.push(r.result);
+      let img = document.createElement("img");
+      img.src = r.result;
+      document.getElementById("galleryPreview").appendChild(img);
+    };
+    r.readAsDataURL(file);
+  });
+};
+
+// 提交（修复版）
+function submitUser(){
+  let g = document.getElementById("gender").value;
+  let a = document.getElementById("age").value;
+  let ar = document.getElementById("area").value;
+  let e = document.getElementById("edu").value;
+  let n = document.getElementById("nick").value.trim();
+  let w = document.getElementById("wechat").value.trim();
+  let bio = document.getElementById("bio").value.trim();
+  let hobby = document.getElementById("hobby").value.trim();
+  let qrcode = document.getElementById("qrcodePreview").src || "";
+  let avatar = document.getElementById("avatarPreview").src || "";
+
+  // 二次校验
+  if(!g||!a||!ar||!e||!n||!w||!sel.height||!sel.weight){
+    alert("请完善所有必填资料");
+    return;
+  }
+
+  if(useCount>=3){
+    document.getElementById("payModal").classList.add("show");
+    document.getElementById("payQrcode").src = config.pay;
+    return;
+  }
+
+  selfPreview = {
+    id: Date.now(),
+    avatar:avatar,
+    gender:g, age:a, area:ar, edu:e, nick:n, wechat:w,
+    height:sel.height, weight:sel.weight,
+    bio:bio, hobby:hobby, qrcode:qrcode, gallery:galleryFiles,
+    status:"pending",
+    createTime: new Date().toLocaleString()
+  };
+
+  users.unshift(selfPreview);
+  saveData();
+  alert("提交成功，等待审核");
+  show("home");
+}
+
+// 预览自己资料
+function previewSelf(){
+  if(!selfPreview){
+    alert("请先提交资料");
+    return;
+  }
+  showUserInfo(selfPreview, "previewModal", "previewInfo");
+}
+
+// 广告
+document.getElementById("adImg").onchange = (e)=>{
+  let r = new FileReader();
+  r.onload = ()=>{ config.adImg = r.result; renderAdPreview(); };
+  r.readAsDataURL(e.target.files[0]);
+};
+function saveAd(){
+  config.ad = document.getElementById("adText").value || config.ad;
+  saveData();
+  renderAdPreview();
+  updateHomeAd();
+  alert("保存成功");
+}
+function renderAdPreview(){
+  let html = "";
+  if(config.ad) html += `<p>${config.ad}</p>`;
+  if(config.adImg) html += `<img src="${config.adImg}">`;
+  document.getElementById("adPreview").innerHTML = html;
+}
+function updateHomeAd(){
+  let h = "";
+  if(config.ad) h += config.ad;
+  if(config.adImg) h += `<br><img src="${config.adImg}" style="max-width:100%;border-radius:8px;margin-top:6px">`;
+  document.getElementById("homeAd").innerHTML = h;
+}
+
+// 收款码
+document.getElementById("payFile").onchange = (e)=>{
+  let r = new FileReader();
+  r.onload = ()=>{ config.pay = r.result; document.getElementById("payPreview").src = config.pay; };
+  r.readAsDataURL(e.target.files[0]);
+};
+function savePay(){ saveData(); alert("保存成功"); }
+
+// 数据存储
+function saveData(){
+  localStorage.setItem("lz_users",JSON.stringify(users));
+  localStorage.setItem("lz_config",JSON.stringify(config));
+  localStorage.setItem("lz_useCount",JSON.stringify(useCount));
+  localStorage.setItem("lz_selfPreview",JSON.stringify(selfPreview));
+}
+function closeModal(){
+  document.querySelectorAll(".modal").forEach(m=>m.classList.remove("show"));
+}
+function payOk(){
+  useCount = 0;
+  saveData();
+  document.getElementById("freeLeft").textContent = 3;
+  closeModal();
+  alert("支付成功，次数已重置");
+}
+
+// 复制微信号
+function copyWechat(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    alert("微信号已复制到剪贴板");
+  }).catch(()=>{
+    alert("复制失败，请手动复制");
+  });
+}
+
+// 保存二维码到相册
+function saveQrcode(src){
+  let a = document.createElement("a");
+  a.href = src;
+  a.download = "微信二维码_"+Date.now()+".jpg";
+  a.click();
+  alert("二维码已保存");
+}
+
+// 展示用户信息
+function showUserInfo(u, modalId, infoId){
+  let galleryHtml = "";
+  if(u.gallery && u.gallery.length>0){
+    galleryHtml = `<div style="margin-top:10px"><strong>个人相册：</strong></div>
+    <div class="gallery">${u.gallery.map(src=>`<img src="${src}">`).join('')}</div>`;
+  }
+  let qrcodeHtml = u.qrcode ? `
+  <div style="margin-top:10px"><strong>个人二维码：</strong><br>
+  <img src="${u.qrcode}" style="width:100px;border-radius:10px;margin:6px auto">
+  <button class="btn save" onclick="saveQrcode('${u.qrcode.replace(/'/g, '%27')}')">💾 保存二维码到相册</button>
+  </div>` : "";
+
+  document.getElementById(infoId).innerHTML = `
+    <img src="${u.avatar}" class="avatar"><br>
+    昵称：${u.nick}<br>年龄：${u.age}岁<br>地区：${u.area}<br>学历：${u.edu}<br>
+    身高：${u.height}cm  体重：${u.weight}kg<br>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin:8px 0">
+      <span>微信：${u.wechat}</span>
+      <button class="btn copy" style="width:auto;padding:8px 16px;font-size:14px" onclick="copyWechat('${u.wechat.replace(/'/g, '%27')}')">📋 复制</button>
+    </div>
+    ${u.bio ? `<br>个性签名：${u.bio}` : ''}
+    ${u.hobby ? `<br>兴趣爱好：${u.hobby}` : ''}
+    ${qrcodeHtml}
+    ${galleryHtml}
+  `;
+  document.getElementById(modalId).classList.add("show");
+}
+
+// 抽奖
+function drawGirl(){ draw("girl"); }
+function drawBoy(){ draw("boy"); }
+function draw(gender){
+  if(useCount>=3){
+    document.getElementById("payModal").classList.add("show");
+    document.getElementById("payQrcode").src = config.pay;
+    return;
+  }
+  useCount++;
+  saveData();
+  document.getElementById("freeLeft").textContent = Math.max(3 - useCount, 0);
+
+  let list = users.filter(u=>u.status=="passed" && u.gender==gender);
+  if(!list.length){
+    alert("暂无该性别用户");
+    return;
+  }
+  let u = list[Math.floor(Math.random()*list.length)];
+  showUserInfo(u, "boxModal", "boxInfo");
+}
+function showBox(){
+  let list = users.filter(u=>u.status=="passed");
+  if(!list.length){
+    alert("暂无已通过用户");
+    return;
+  }
+  let u = list[Math.floor(Math.random()*list.length)];
+  showUserInfo(u, "boxModal", "boxInfo");
+}
+
+// 审核
+function loadCheck(){
+  let html = "";
+  users.filter(u=>u.status=="pending").forEach((u,i)=>{
+    html+=`
+    <div style="background:#f9f9f9;padding:14px;border-radius:12px;margin-bottom:10px">
+      <p>${u.nick} | ${u.age}岁 | ${u.area}</p>
+      <p>${u.height}cm ${u.weight}kg ${u.edu}</p>
+      <button class="btn pass" onclick="pass(${u.id})">通过</button>
+      <button class="btn reject" onclick="reject(${u.id})">拒绝</button>
+    </div>`;
+  });
+  document.getElementById("checkList").innerHTML = html || "<p style='text-align:center'>暂无待审核用户</p>";
+}
+function pass(id){
+  let u = users.find(item=>item.id===id);
+  if(u) u.status = "passed";
+  saveData();
+  loadCheck();
+  alert("审核通过");
+}
+function reject(id){
+  users = users.filter(item=>item.id!==id);
+  saveData();
+  loadCheck();
+  alert("已拒绝");提示("已拒绝");提示("已拒绝");提示("已拒绝");
+}
+
+function loadUsers(){
+  let html = "";
+  users.forEach((u,i)=>{
+    html+=`
+    <div style="background:#f9f9f9;padding:14px;border-radius:12px;margin-bottom:10px">
+      <p>${u.nick} | ${u.age}岁 | ${u.area}</p>
+      <p>${u.height}cm ${u.weight}kg ${u.edu} | 状态：${u.status==="pending"?"待审核":"已通过"}</p><p>${u.height}厘米 ${u.weight}千克 ${u.edu} | 状态：${u.status==="pending"?"待审核":"已通过"}</p><p>${u.height}厘米 ${u.weight}千克 ${u.edu} | 状态：${u.status==="pending"?"待审核":"已通过"}</p><p>${u.height}厘米 ${u.weight}千克 ${u.edu} | 状态：${u.status==="pending"?"待审核":"已通过"}</p>
+      <button class="btn del" onclick="delUser(${u.id})">删除</button>
+    </div>`;
+  });
+  document.getElementById("userList").innerHTML = html || "<p style='text-align:center'>暂无用户</p>";
+}
+function delUser(id){
+  if(!confirm("确定删除该用户？")) return;
+  users = users.filter(item=>item.id!==id);
+  saveData();
+  loadUsers();加载用户();
+}
+
+function loadStat(){function 加载统计(){
+  document.getElementById("total").innerText = users.length;
+  document.getElementById("pending").innerText = users.filter(u=>u.status=="pending").length;
+  document.getElementById("passed").innerText = users.filter(u=>u.status=="passed").length;
+  document.getElementById("money").innerText = (config.payCount||0)*0.99;
+}
+
+// 防截图
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){如果(document.hidden){
+    document.getElementById("hideLayer").style.display = "block";
+  }else{
+    setTimeout(()=>{
+      document.getElementById("hideLayer").style.display = "none";
+    },500);
+  }
+});
+</script>
+</body>
+</html>
