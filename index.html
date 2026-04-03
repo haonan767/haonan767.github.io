@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>温言俱乐部</title>
+<style> *{margin:0;padding:0;box-sizing:border-box} html,body{width:100%;height:100%;background:#0f1618;background:linear-gradient(rgba(14,16,24,0.95),rgba(14,16,24,0.95)),url('https://picsum.photos/1080/1920');background-size:cover;background-position:center;background-attachment:fixed;color:#fff;font-family:"PingFang SC","Microsoft YaHei",sans-serif} .page{display:none;padding:20px;padding-bottom:160px;min-height:100%} .page.active{display:block !important} .logo{text-align:center;margin:10px 0} #logoImg{width:100px;height:100px;border-radius:50%;object-fit:cover;background:#111} .logo h2{margin-top:6px;font-size:20px} .adBox{background:#7E57C2;padding:10px 14px;border-radius:12px;margin:10px 0;text-align:center} /* 横向滚动公告（你要的） */ .marquee{width:100%;background:#1E2E24;padding:8px 14px;border-radius:12px;margin:10px 0;white-space:nowrap;overflow:hidden} .marquee span{display:inline-block;padding-left:100%;animation:marquee 12s linear infinite} @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}} .title{font-size:16px;margin:14px 0 8px} .grid-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px} .grid-item{background:#1E2E24;border-radius:14px;padding:14px;cursor:pointer !important;text-align:center} .grid-item img{width:40px;height:40px;object-fit:cover;border-radius:8px;margin-bottom:6px} .grid-item p{font-size:13px} .card{background:#1A1A29;border-radius:16px;padding:20px;margin-bottom:16px} .card h3{margin-bottom:14px} input,select{width:100%;background:#222;color:#fff;border:none;border-radius:12px;padding:14px;margin-bottom:10px} .btn{width:100%;background:#7E57C2;color:#fff;border:none;border-radius:12px;padding:15px;margin-top:6px;cursor:pointer !important} .small-btn{flex:1;background:#7E57C2;color:#fff;border:none;border-radius:10px;padding:12px;cursor:pointer !important} .btn-row{display:flex;gap:8px;margin-top:10px} .avatar{width:100px;height:100px;border-radius:50%;object-fit:cover;background:#333;margin:10px auto;display:block} .qrcode{width:200px;height:200px;background:#fff;object-fit:contain;margin:10px auto;display:block} .mj-container{width:100%;height:500px;background:#1a2e24;border-radius:16px;position:relative;overflow:hidden} .mj-desk{width:100%;height:100%;position:relative} .mj-user{display:flex;gap:4px;position:absolute;bottom:10px;left:50%;transform:translateX(-50%)} .mj-left{display:flex;flex-direction:column;gap:4px;position:absolute;left:10px;top:50%;transform:translateY(-50%)} .mj-right{display:flex;flex-direction:column;gap:4px;position:absolute;right:10px;top:50%;transform:translateY(-50%)} .mj-top{display:flex;gap:4px;position:absolute;top:10px;left:50%;transform:translateX(-50%)} .mj-card{width:36px;height:48px;background:#fff;color:#000;font-size:12px;display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid #333} .mj-btn{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);display:flex;gap:10px} .mj-btn button{padding:12px 16px;border-radius:8px;background:#7E57C2;color:#fff;border:none;font-size:14px;cursor:pointer !important} .mj-select{position:absolute;top:10px;left:10px;display:flex;gap:6px} .mj-select select{padding:8px;border-radius:8px} .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0D0D1A;display:flex;padding:14px 12px;gap:10px;z-index:10} .bottom-nav button{flex:1;background:#7E57C2;color:#fff;border:none;border-radius:14px;padding:18px 0;font-size:16px;cursor:pointer !important} #takeOrderBtn{padding:22px 0;font-size:18px} .order-item{background:#222;padding:12px;border-radius:8px;margin-bottom:8px} .order-status{color:#ff9c44} .order-pass{color:#4cff7e} /* 欢迎弹窗（你要的） */ #welcomePopup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999} .popupBody{background:#1A1A29;padding:30px;border-radius:20px;width:85%;text-align:center} .popupBody button{padding:12px 30px;background:#7E57C2;color:#fff;border:none;border-radius:12px;cursor:pointer !important;margin-top:20px} </style>
+</head>
+<body>
+<!-- 欢迎弹窗（自动弹出） -->
+<div id="welcomePopup">
+  <div class="popupBody">
+    <h2 id="popTitle">欢迎来到温言俱乐部</h2>
+    <p id="popSub">你的言语也在温暖着我的心</p>
+    <button onclick="closePopup()">确定</button>
+  </div>
+</div>
+
+<div class="page active" id="home">
+  <div class="logo">
+    <img id="logoImg" src="https://img.icons8.com/clouds/100/ffffff/crown.png">
+    <h2 id="siteName">温言俱乐部</h2>
+  </div>
+  <div class="adBox" id="homeAd">广告：欢迎光临</div>
+
+  <!-- 横向滚动公告 -->
+  <div class="marquee"><span id="homeNotice">公告加载中...</span></div>
+  <div class="title">王牌项目</div>
+  <div class="grid-box">
+    <div class="grid-item" onclick="show('catchPage')">
+      <img id="icon_同城捉奸" src="https://img.icons8.com/clouds/100/ffffff/ambulance.png">
+      <p>同城捉奸</p>
+    </div>
+    <div class="grid-item" onclick="show('shopPage')">
+      <img id="icon_同城探店" src="https://img.icons8.com/clouds/100/ffffff/restaurant.png">
+      <p>同城探店</p>
+    </div>
+    <div class="grid-item" onclick="show('mjPage')">
+      <img id="icon_三缺一麻将" src="https://img.icons8.com/clouds/100/ffffff/cards.png">
+      <p>三缺一麻将</p>
+    </div>
+  </div>
+  <div class="title">陪伴项目</div>
+  <div class="grid-box">
+    <div class="grid-item" onclick="show('playPage')"><img id="icon_语音聊天" src="https://img.icons8.com/clouds/100/ffffff/microphone.png"><p>语音聊天</p></div>
+    <div class="grid-item" onclick="show('playPage')"><img id="icon_哄睡" src="https://img.icons8.com/clouds/100/ffffff/bed.png"><p>哄睡</p></div>
+    <div class="grid-item" onclick="show('playPage')"><img id="icon_受气包" src="https://img.icons8.com/clouds/100/ffffff/sad.png"><p>受气包</p></div>
+    <div class="grid-item" onclick="show('playPage')"><img id="icon_虚拟恋人" src="https://img.icons8.com/clouds/100/ffffff/heart.png"><p>虚拟恋人</p></div>
+    <div class="grid-item" onclick="show('playPage')"><img id="icon_心理疏导" src="https://img.icons8.com/clouds/100/ffffff/psychology.png"><p>心理疏导</p></div>
+    <div class="grid-item" onclick="show('playPage')"><img id="icon_其他" src="https://img.icons8.com/clouds/100/ffffff/more.png"><p>其他</p></div>
+  </div>
+  <div class="title">热门游戏</div>
+  <div class="grid-box" id="gameList"></div>
+</div>
+
+<div class="page" id="userFormPage">
+  <div class="card">
+    <h3>玩家下单资料</h3>
+    <img class="avatar" id="uAvatar" src="https://img.icons8.com/clouds/100/ffffff/user.png">
+    <input type="file" accept="image/*" onchange="updAvatar('u')">
+    <input id="uName" placeholder="昵称">
+    <select id="uSex"><option>男</option><option>女</option></select>
+    <select id="uAge"></select>
+    <input id="uWechat" placeholder="微信号">
+    <input id="uGameId" placeholder="游戏ID">
+    <select id="uType"><option>娱乐陪</option><option>技术陪</option><option>甜蜜陪</option></select>
+    <select id="uVoice">
+      <option>少女音</option><option>萝莉音</option><option>御姐音</option><option>温柔音</option>
+      <option>青叔音</option><option>少年音</option><option>暖男音</option><option>磁性音</option>
+    </select>
+    <button class="btn" onclick="saveUserForm()">保存资料</button>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="gameOrderPage">
+  <div class="card">
+    <h3 id="gameTitle">游戏下单</h3>
+    <select id="gType"><option>娱乐陪</option><option>技术陪</option><option>甜蜜陪</option></select>
+    <select id="gVoice"><option>少女音</option><option>萝莉音</option><option>御姐音</option><option>温柔音</option><option>青叔音</option><option>少年音</option><option>暖男音</option><option>磁性音</option></select>
+    <select id="gHour" onchange="calcGamePrice()">
+      <option value="1">1小时</option><option value="2">2小时</option><option value="3">3小时</option><option value="5">5小时</option><option value="10">10小时</option><option value="12">12小时</option><option value="24">包天</option>
+    </select>
+    <select id="gDiscount" onchange="calcGamePrice()">
+      <option value="0">不打折</option><option value="0.8">首月8折</option>
+    </select>
+    <p id="gPriceText">价格：--</p>
+    <img class="qrcode" id="gameQrcode">
+    <button class="btn" onclick="submitGameOrder()">提交订单</button>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="playPage">
+  <div class="card">
+    <h3>陪伴项目</h3>
+    <select id="pSex"><option>男陪</option><option>女陪</option></select>
+    <select id="pVoice"><option>少女音</option><option>萝莉音</option><option>御姐音</option><option>温柔音</option><option>青叔音</option><option>少年音</option><option>暖男音</option><option>磁性音</option></select>
+    <select id="pHour" onchange="calcPlayPrice()">
+      <option value="1">1小时</option><option value="2">2小时</option><option value="3">3小时</option><option value="5">5小时</option><option value="10">10小时</option><option value="12">12小时</option><option value="24">包天</option>
+    </select>
+    <select id="pDiscount" onchange="calcPlayPrice()">
+      <option value="0">不打折</option><option value="0.8">首月8折</option>
+    </select>
+    <p id="pPriceText">价格：--</p>
+    <img class="qrcode" id="playQrcode">
+    <button class="btn" onclick="submitPlayOrder()">提交订单</button>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="catchPage">
+  <div class="card">
+    <h3>同城捉奸</h3>
+    <select id="catchArea">
+      <option>兰州市-城关区</option><option>兰州市-七里河区</option><option>兰州市-西固区</option><option>兰州市-安宁区</option><option>兰州市-红古区</option>
+      <option>兰州市-永登县</option><option>兰州市-皋兰县</option><option>兰州市-榆中县</option>
+    </select>
+    <input placeholder="填写需求">
+    <select id="cHour" onchange="calcCatchPrice()">
+      <option value="1">1小时</option><option value="2">2小时</option><option value="3">3小时</option>
+    </select>
+    <select id="cDiscount" onchange="calcCatchPrice()">
+      <option value="0">不打折</option><option value="0.8">首月8折</option>
+    </select>
+    <p id="cPriceText">价格：--</p>
+    <img class="qrcode" id="catchQrcode">
+    <button class="btn" onclick="submitCatchOrder()">提交订单</button>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="shopPage">
+  <div class="card">
+    <h3>同城探店</h3>
+    <button class="btn" onclick="alert('已获取定位')">开启GPS定位</button>
+    <select id="shopArea">
+      <option>兰州市-城关区</option><option>兰州市-七里河区</option><option>兰州市-西固区</option><option>兰州市-安宁区</option><option>兰州市-红古区</option>
+      <option>兰州市-永登县</option><option>兰州市-皋兰县</option><option>兰州市-榆中县</option>
+    </select>
+    <div class="order-item">店名：测试店 | 电话：13800138000</div>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="mjPage">
+  <div class="card">
+    <h3>三缺一麻将（腾讯版）</h3>
+    <div class="mj-container">
+      <div class="mj-select">
+        <select id="mjRule"><option>大众麻将</option><option>血流成河</option><option>血战到底</option></select>
+        <select id="mjMulti"><option>1倍</option><option>2倍</option><option>5倍</option><option>10倍</option></select>
+      </div>
+      <div class="mj-desk">
+        <div class="mj-top" id="mjTop"></div>
+        <div class="mj-left" id="mjLeft"></div>
+        <div class="mj-right" id="mjRight"></div>
+        <div class="mj-user" id="mjUser"></div>
+        <div class="mj-btn">
+          <button onclick="peng()">碰</button>
+          <button onclick="gang()">杠</button>
+          <button onclick="chi()">吃</button>
+          <button onclick="hu()">胡</button>
+          <button onclick="startMj()">开始游戏</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<!-- 这里只改文字：大神接单 → 成为店员 -->
+<div class="page" id="godPage">
+  <div id="godLoginBox">
+    <div class="card">
+      <h3>店员登录</h3>
+      <input type="password" id="godPwdInput" placeholder="请输入店员密码">
+      <button class="btn" onclick="godLogin()">登录</button>
+    </div>
+  </div>
+  <div id="godMain" style="display:none">
+    <div class="card">
+      <h3>店员接单系统</h3>
+      <button class="btn" onclick="show('godFormPage')">完善资料</button>
+      <button class="btn" onclick="show('godPwdPage')">修改密码</button>
+      <button class="btn" id="takeOrderBtn" onclick="showGodCheckedOrders()">查看可接单</button>
+      <div id="godOrderListShow" style="margin-top:20px"></div>
+    </div>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="godFormPage">
+  <div class="card">
+    <h3>我的资料</h3>
+    <img class="avatar" id="gAvatar" src="https://img.icons8.com/clouds/100/ffffff/user.png">
+    <input type="file" accept="image/*" onchange="updAvatar('g')">
+    <input id="gName" placeholder="昵称">
+    <select id="gSex"><option>男</option><option>女</option></select>
+    <input id="gAge" placeholder="年龄">
+    <input id="gWechat" placeholder="微信号">
+    <select id="gVoice"><option>少女音</option><option>萝莉音</option><option>御姐音</option><option>温柔音</option><option>青叔音</option><option>少年音</option><option>暖男音</option><option>磁性音</option></select>
+    <button class="btn" onclick="saveGodForm()">保存资料</button>
+  </div>
+  <button class="btn" onclick="show('godPage')">返回</button>
+</div>
+
+<div class="page" id="godPwdPage">
+  <div class="card">
+    <h3>修改密码</h3>
+    <input type="password" id="gOldPwd" placeholder="原密码">
+    <input type="password" id="gNewPwd" placeholder="新密码">
+    <button class="btn" onclick="saveGodPwd()">保存</button>
+  </div>
+  <button class="btn" onclick="show('godPage')">返回</button>
+</div>
+
+<div class="page" id="adminPage">
+  <div id="adminLoginBox">
+    <div class="card">
+      <h3>管理员登录</h3>
+      <input type="password" id="adminInputPwd" placeholder="请输入管理员密码">
+      <button class="btn" onclick="adminLogin()">登录</button>
+    </div>
+  </div>
+  <div id="adminMenu" style="display:none">
+    <div class="card">
+      <button class="btn" onclick="show('setSiteName')">修改俱乐部名称</button>
+      <button class="btn" onclick="show('setPopup')">修改弹窗公告</button>
+      <button class="btn" onclick="show('adminBgPage')">全局背景</button>
+      <button class="btn" onclick="show('adminLogoPage')">Logo上传</button>
+      <button class="btn" onclick="show('adminAdPage')">广告修改</button>
+      <button class="btn" onclick="show('adminNoticePage')">公告修改</button>
+      <button class="btn" onclick="show('adminIconPage')">图标上传</button>
+      <button class="btn" onclick="show('adminPricePage')">价格修改</button>
+      <button class="btn" onclick="show('adminOrderPage')">订单审核</button>
+      <button class="btn" onclick="show('adminQrcodePage')">收款码</button>
+      <button class="btn" onclick="adminLogout()">退出</button>
+    </div>
+  </div>
+  <button class="btn" onclick="show('home')">返回</button>
+</div>
+
+<div class="page" id="setSiteName"><div class="card"><h3>修改俱乐部名称</h3><input id="newName"><button class="btn" onclick="saveSiteName()">保存</button></div><button class="btn" onclick="show('adminPage')">返回</button></div>
+<div class="page" id="setPopup"><div class="card"><h3>修改弹窗公告</h3><input id="pTitle" placeholder="标题"><input id="pSub" placeholder="小字"><button class="btn" onclick="savePopup()">保存</button></div><button class="btn" onclick="show('adminPage')">返回</button></div>
+<div class="page" id="adminBgPage"><div class="card"><h3>全局背景上传</h3><input type="file" accept="image/*" onchange="updAdminBg()"><button class="btn" onclick="show('adminPage')">返回后台</button></div></div>
+<div class="page" id="adminLogoPage"><div class="card"><h3>上传Logo</h3><input type="file" accept="image/*" onchange="updAdminLogo()"><button class="btn" onclick="show('adminPage')">返回</button></div></div>
+<div class="page" id="adminAdPage"><div class="card"><h3>首页广告</h3><input id="adminAdInput"><button class="btn" onclick="saveAdminAd()">保存</button><button class="btn" onclick="show('adminPage')">返回</button></div></div>
+<div class="page" id="adminNoticePage"><div class="card"><h3>首页公告</h3><input id="adminNoticeInput" maxlength="200"><button class="btn" onclick="saveAdminNotice()">保存</button><button class="btn" onclick="show('adminPage')">返回</button></div></div>
+<div class="page" id="adminIconPage">
+  <div class="card">
+    <h3>项目图标上传（全类目）</h3>
+    <select id="iconSel">
+      <option>同城捉奸</option><option>同城探店</option><option>三缺一麻将</option>
+      <option>语音聊天</option><option>哄睡</option><option>受气包</option><option>虚拟恋人</option><option>心理疏导</option><option>其他</option>
+      <option>王者荣耀</option><option>和平精英</option><option>三角洲行动</option><option>金铲铲之战</option><option>光遇</option><option>蛋仔派对</option><option>第五人格</option><option>永劫无间</option><option>逆水寒</option><option>无畏契约</option><option>火影忍者</option><option>原神</option>
+    </select>
+    <input type="file" accept="image/*" onchange="updAdminIcon()">
+    <button class="btn" onclick="show('adminPage')">返回</button>
+  </div>
+</div>
+
+<div class="page" id="adminPricePage">
+  <div class="card">
+    <h3>全类目价格（每小时单价）</h3>
+    <select id="priceSelAll">
+      <option>同城捉奸</option><option>同城探店</option><option>三缺一麻将</option>
+      <option>语音聊天</option><option>哄睡</option><option>受气包</option><option>虚拟恋人</option><option>心理疏导</option><option>其他</option>
+      <option>王者荣耀</option><option>和平精英</option><option>三角洲行动</option><option>金铲铲之战</option><option>光遇</option><option>蛋仔派对</option><option>第五人格</option><option>永劫无间</option><option>逆水寒</option><option>无畏契约</option><option>火影忍者</option><option>原神</option>
+    </select>
+    <input id="priceValAll" placeholder="每小时单价（默认12）" value="12">
+    <button class="btn" onclick="saveAdminPriceAll()">保存单价</button>
+    <button class="btn" onclick="show('adminPage')">返回</button>
+  </div>
+</div>
+
+<div class="page" id="adminOrderPage">
+  <div class="card">
+    <h3>订单审核中心</h3>
+    <div id="allOrderList"></div>
+    <button class="btn" onclick="refreshAdminOrder()">刷新列表</button>
+  </div>
+  <button class="btn" onclick="show('adminPage')">返回</button>
+</div>
+
+<div class="page" id="adminQrcodePage"><div class="card"><h3>收款码</h3><input type="file" onchange="updQrcode('game')"><input type="file" onchange="updQrcode('play')"><input type="file" onchange="updQrcode('catch')"><button class="btn" onclick="show('adminPage')">返回</button></div></div>
+
+<!-- 底部导航：只改这四个字：大神接单 → 成为店员 -->
+<div class="bottom-nav">
+  <button onclick="show('home')">首页</button>
+  <button onclick="show('userFormPage')">下单资料</button>
+  <button onclick="show('godPage')">成为店员</button>
+  <button onclick="show('adminPage')">后台</button>
+</div>
+
+<script>
+const GAMES = ["王者荣耀","和平精英","三角洲行动","金铲铲之战","光遇","蛋仔派对","第五人格","永劫无间","逆水寒","无畏契约","火影忍者","原神"];
+const $ = id => document.getElementById(id);
+function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');}
+function closePopup(){$('welcomePopup').style.display='none'}
+for(let i=16;i<=60;i++)$('uAge').innerHTML+=`<option>${i}</option>`;
+
+window.onload = function(){
+  let h='';
+  GAMES.forEach(g=>{
+    h+=`<div class="grid-item" onclick="openGame('${g}')">
+    <img id="icon_${g}" src="https://img.icons8.com/clouds/100/ffffff/star.png">
+    <p>${g}</p></div>`;
+  });
+  $('gameList').innerHTML = h;
+  syncAll();
+}
+
+function openGame(name){$('gameTitle').innerText=name;show('gameOrderPage');calcGamePrice()}
+
+function checkUserInfo(){const u=JSON.parse(localStorage.getItem('userForm')||'{}');if(!u.uName||!u.uWechat){alert('请先完成资料填写才能下单！');return false}return true}
+function getBase(item){return parseInt(localStorage.getItem('price_'+item))||12}
+function calcGamePrice(){const b=getBase($('gameTitle').innerText);const h=parseInt($('gHour').value);const d=parseFloat($('gDiscount').value);let t=b+(h-1)*10;if(d>0)t=(t*d).toFixed(1);$('gPriceText').innerText=`${h}小时：${t}元`}
+function calcPlayPrice(){const b=getBase("语音聊天");const h=parseInt($('pHour').value);const d=parseFloat($('pDiscount').value);let t=b+(h-1)*10;if(d>0)t=(t*d).toFixed(1);$('pPriceText').innerText=`${h}小时：${t}元`}
+function calcCatchPrice(){const b=getBase("同城捉奸");const h=parseInt($('cHour').value);const d=parseFloat($('cDiscount').value);let t=b+(h-1)*10;if(d>0)t=(t*d).toFixed(1);$('cPriceText').innerText=`${h}小时：${t}元`}
+
+function submitGameOrder(){if(!checkUserInfo())return;if(!confirm('确认提交订单并支付？'))return;const name=$('gameTitle').innerText;const h=$('gHour').value;const d=$('gDiscount').value;let b=getBase(name);let t=b+(h-1)*10;if(d>0)t=(t*d).toFixed(1);const order={id:Date.now(),type:'游戏',item:name,hour:h,total:t,user:JSON.parse(localStorage.getItem('userForm')),status:'待付款',createTime:new Date().toLocaleString()};let arr=JSON.parse(localStorage.getItem('allOrders')||'[]');arr.unshift(order);localStorage.setItem('allOrders',JSON.stringify(arr));alert('订单已提交，等待管理员审核');show('home')}
+function submitPlayOrder(){if(!checkUserInfo())return;if(!confirm('确认提交订单并支付？'))return;const h=$('pHour').value;const d=$('pDiscount').value;let b=getBase("语音聊天");let t=b+(h-1)*10;if(d>0)t=(t*d).toFixed(1);const order={id:Date.now(),type:'陪伴',item:'陪伴',hour:h,total:t,user:JSON.parse(localStorage.getItem('userForm')),status:'待付款',createTime:new Date().toLocaleString()};let arr=JSON.parse(localStorage.getItem('allOrders')||'[]');arr.unshift(order);localStorage.setItem('allOrders',JSON.stringify(arr));alert('订单已提交，等待管理员审核');show('home')}
+function submitCatchOrder(){if(!checkUserInfo())return;if(!confirm('确认提交订单并支付？'))return;const h=$('cHour').value;const d=$('cDiscount').value;let b=getBase("同城捉奸");let t=b+(h-1)*10;if(d>0)t=(t*d).toFixed(1);const order={id:Date.now(),type:'捉奸',item:'同城捉奸',hour:h,total:t,user:JSON.parse(localStorage.getItem('userForm')),status:'待付款',createTime:new Date().toLocaleString()};let arr=JSON.parse(localStorage.getItem('allOrders')||'[]');arr.unshift(order);localStorage.setItem('allOrders',JSON.stringify(arr));alert('订单已提交，等待管理员审核');show('home')}
+
+function godLogin(){if($('godPwdInput').value=='123456'){$('godLoginBox').style.display='none';$('godMain').style.display='block'}else{alert('密码错误')}}
+function showGodCheckedOrders(){const list=JSON.parse(localStorage.getItem('allOrders')||'[]').filter(o=>o.status=='已审核');let html=list.length==0?'<p>暂无已审核订单</p>':'';list.forEach(o=>{html+=`<div class="order-item"><div>${o.type} | ${o.item} | ${o.hour}小时 | ${o.total}元</div><div>玩家：${o.user.uName} | ${o.user.uWechat} | ${o.user.uGameId}</div><div class="order-pass">已审核可接单</div></div>`});$('godOrderListShow').innerHTML=html}
+function refreshAdminOrder(){const list=JSON.parse(localStorage.getItem('allOrders')||'[]');let html='';list.forEach(o=>{html+=`<div class="order-item"><div>${o.createTime}</div><div>${o.type} | ${o.item} | ${o.hour}小时 | ${o.total}元</div><div>玩家：${o.user.uName} | ${o.user.uWechat}</div><div class="${o.status=='待付款'?'order-status':'order-pass'}">${o.status}</div>${o.status=='待付款'?`<button class="btn" onclick="passOrder(${o.id})">审核通过</button>`:''}</div>`});$('allOrderList').innerHTML=html}
+function passOrder(id){let list=JSON.parse(localStorage.getItem('allOrders')||'[]');list=list.map(o=>{if(o.id==id)o.status='已审核';return o});localStorage.setItem('allOrders',JSON.stringify(list));alert('审核成功，店员可查看');refreshAdminOrder()}
+
+function updAvatar(w){const f=event.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>$(w+'Avatar').src=e.target.result;r.readAsDataURL(f)}
+function saveUserForm(){const d={uName:$('uName').value,uSex:$('uSex').value,uAge:$('uAge').value,uWechat:$('uWechat').value,uGameId:$('uGameId').value};localStorage.setItem('userForm',JSON.stringify(d));alert('保存成功')}
+function saveGodForm(){alert('资料保存成功')}
+function saveGodPwd(){if($('gOldPwd').value!='123456')return alert('原密码错误');localStorage.setItem('godPwd',$('gNewPwd').value);alert('修改成功');show('godPage')}
+function adminLogin(){if($('adminInputPwd').value=='050928'){$('adminLoginBox').style.display='none';$('adminMenu').style.display='block'}else{alert('密码错误')}}
+function adminLogout(){location.reload()}
+
+function saveSiteName(){localStorage.setItem('siteName',$('newName').value);syncAll();alert('保存成功')}
+function savePopup(){localStorage.setItem('popTitle',$('pTitle').value);localStorage.setItem('popSub',$('pSub').value);syncAll();alert('保存成功')}
+function updAdminBg(){const f=event.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{localStorage.setItem('bg',e.target.result);document.body.style.backgroundImage=`linear-gradient(rgba(14,16,24,0.95),rgba(14,16,24,0.95)),url('${e.target.result}')`};r.readAsDataURL(f)}
+function updAdminLogo(){const f=event.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{localStorage.setItem('logo',e.target.result);$('logoImg').src=e.target.result};r.readAsDataURL(f)}
+function saveAdminAd(){const v=$('adminAdInput').value;localStorage.setItem('ad',v);$('homeAd').innerText=v}
+function saveAdminNotice(){const v=$('adminNoticeInput').value;localStorage.setItem('notice',v);$('homeNotice').innerText=v}
+function updAdminIcon(){const f=event.target.files[0];if(!f)return;const t=$('iconSel').value;const r=new FileReader();r.onload=e=>{localStorage.setItem('icon_'+t,e.target.result);document.getElementById('icon_'+t).src=e.target.result};r.readAsDataURL(f)}
+function saveAdminPriceAll(){const k=$('priceSelAll').value;const v=$('priceValAll').value;localStorage.setItem('price_'+k,v);alert('保存成功')}
+function updQrcode(t){const f=event.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{localStorage.setItem('qr_'+t,e.target.result);$(t+'Qrcode').src=e.target.result};r.readAsDataURL(f)}
+
+const MJ=['1万','2万','3万','4万','5万','6万','7万','8万','9万','1条','2条','3条','4条','5条','6条','7条','8条','9条','1筒','2筒','3筒','4筒','5筒','6筒','7筒','8筒','9筒'];
+function randMj(){return MJ[Math.floor(Math.random()*MJ.length)]}
+function mkCards(n){let h='';for(let i=0;i<n;i++)h+=`<div class="mj-card">${randMj()}</div>`;return h}
+function startMj(){$('mjUser').innerHTML=mkCards(14);$('mjTop').innerHTML=mkCards(14);$('mjLeft').innerHTML=mkCards(14);$('mjRight').innerHTML=mkCards(14);alert('自动发牌完成，3人机已就位')}
+function peng(){alert('碰牌')}
+function gang(){alert('杠牌')}
+function chi(){alert('吃牌')}
+function hu(){alert('恭喜胡牌！')}
+
+function syncAll(){
+  const bg=localStorage.getItem('bg');if(bg)document.body.style.backgroundImage=`linear-gradient(rgba(14,16,24,0.95),rgba(14,16,24,0.95)),url('${bg}')`;
+  const logo=localStorage.getItem('logo');if(logo)$('logoImg').src=logo;
+  const ad=localStorage.getItem('ad');if(ad)$('homeAd').innerText=ad;
+  const nt=localStorage.getItem('notice')||'欢迎使用温言俱乐部';if(nt)$('homeNotice').innerText=nt;
+  document.querySelectorAll('[id^="icon_"]').forEach(i=>{const s=localStorage.getItem(i.id);if(s)i.src=s});
+  const siteName=localStorage.getItem('siteName')||'温言俱乐部';$('siteName').innerText=siteName;
+  const popT=localStorage.getItem('popTitle')||'欢迎来到温言俱乐部';$('popTitle').innerText=popT;
+  const popS=localStorage.getItem('popSub')||'你的言语也在温暖着我的心';$('popSub').innerText=popS;
+}
+</script>
+</body>
+</html>
