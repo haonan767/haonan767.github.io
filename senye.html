@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SY·森野club</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+        body{background:#1a2e3b;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px}
+        .app{width:400px;height:780px;background:#fff;border-radius:32px;overflow:hidden;display:flex;flex-direction:column}
+        .header{padding:16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+        .back-btn{font-size:20px;cursor:pointer;color:#1a3a2a;margin-right:12px}
+        .content{flex:1;overflow-y:auto;padding:16px}
+        .nav{display:flex;border-top:1px solid #eee;padding:12px;justify-content:space-around}
+        .nav-item{cursor:pointer;color:#888}.nav-item.active{color:#1a3a2a}
+        .btn{background:#1a3a2a;color:#fff;border:none;padding:10px 20px;border-radius:30px;cursor:pointer;font-weight:600}
+        .btn-outline{background:#fff;border:1px solid #1a3a2a;color:#1a3a2a}
+        .btn-small{padding:6px 14px;font-size:13px}
+        .hidden{display:none!important}
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:9999}
+        .modal-box{background:#fff;width:320px;border-radius:24px;padding:24px;max-height:80vh;overflow-y:auto}
+        .input{width:100%;padding:12px;border:1px solid #ddd;border-radius:20px;margin-bottom:12px}
+        .card{background:#f5f5f5;border-radius:16px;padding:12px;margin-bottom:10px}
+        .avatar{width:50px;height:50px;border-radius:16px;background:#ddd;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+        .avatar img{width:100%;height:100%;object-fit:cover}
+        .badge{background:#eaf2ed;padding:4px 12px;border-radius:20px;font-size:12px;margin:3px;cursor:pointer;display:inline-block}
+        .badge.active{background:#1a3a2a;color:#fff}
+        .service-tag{background:#eaf2ed;padding:4px 12px;border-radius:20px;font-size:12px;margin:3px;display:inline-block;cursor:pointer}
+        .service-tag.selected{background:#1a3a2a;color:#fff}
+        .wx-copy{display:flex;gap:8px}
+        .contact-bar{background:#e8f0ec;padding:10px;border-radius:30px;text-align:center;margin:10px 0}
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        td,th{border:1px solid #ddd;padding:6px;text-align:center}
+        input[type=number]{width:60px;padding:4px}
+    </style>
+</head>
+<body>
+<div class="app">
+    <div id="loginPage" style="padding:24px;height:100%;overflow-y:auto">
+        <div style="text-align:center;margin-bottom:30px">
+            <div id="loginLogo" style="font-size:50px;margin-bottom:10px">🌲</div>
+            <h2 id="loginClubName">SY·森野club</h2>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:20px">
+            <button id="showLogin" style="flex:1;padding:12px;background:#1a3a2a;color:#fff;border:none;border-radius:30px">登录</button>
+            <button id="showReg" style="flex:1;padding:12px;background:#e0e8e4;color:#1a3a2a;border:none;border-radius:30px">注册</button>
+        </div>
+        <div id="loginBox">
+            <input id="loginUser" class="input" placeholder="账号" value="admin">
+            <input id="loginPwd" class="input" type="password" placeholder="密码" value="123456">
+            <button id="loginBtn" class="btn" style="width:100%">登录</button>
+            <p id="forgotBtn" style="text-align:center;margin-top:16px;cursor:pointer">忘记密码？</p>
+        </div>
+        <div id="regBox" class="hidden">
+            <input id="regUser" class="input" placeholder="账号">
+            <input id="regPwd" class="input" type="password" placeholder="密码" value="123456">
+            <input id="regNick" class="input" placeholder="昵称">
+            <select id="regGender" class="input"><option>男</option><option>女</option></select>
+            <input id="regAge" class="input" type="number" value="18" min="16" max="60">
+            <textarea id="regBio" class="input" placeholder="个人介绍" style="height:60px"></textarea>
+            <div class="wx-copy"><input id="regWx" class="input" placeholder="微信号(必填)" style="margin-bottom:0"><button class="btn-outline btn-small" id="copyWxBtn" type="button"><i class="far fa-copy"></i></button></div>
+            <select id="regRole" class="input"><option value="boss">老板</option><option value="player">陪玩</option></select>
+            <div id="gameArea" class="hidden">
+                <select id="regGame" class="input"></select>
+                <select id="regCategory" class="input"><option>普通陪</option><option>技术陪</option><option>娱乐陪</option></select>
+                <div id="serviceTags"></div>
+            </div>
+            <button id="regBtn" class="btn" style="width:100%">注册</button>
+        </div>
+    </div>
+
+    <div id="mainApp" class="hidden" style="height:100%;display:flex;flex-direction:column">
+        <div class="header">
+            <div style="display:flex;align-items:center">
+                <i class="fas fa-arrow-left back-btn" id="backBtn"></i>
+                <img id="headerLogo" src="" style="width:32px;height:32px;border-radius:8px;display:none">
+                <i class="fas fa-tree" id="defaultIcon" style="color:#1a3a2a;margin-left:8px"></i>
+                <h2 id="clubName" style="margin-left:8px">SY·森野club</h2>
+            </div>
+            <div>
+                <i class="fas fa-bullhorn" id="announceBtn" style="margin-right:12px;cursor:pointer"></i>
+                <i class="fas fa-sign-out-alt" id="logoutBtn" style="cursor:pointer"></i>
+            </div>
+        </div>
+        <div class="content" id="appContent"></div>
+        <div class="nav" id="bottomNav">
+            <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><div>首页</div></div>
+            <div class="nav-item" data-page="orders"><i class="fas fa-list"></i><div>订单</div></div>
+            <div class="nav-item" data-page="profile"><i class="fas fa-user"></i><div>我的</div></div>
+        </div>
+    </div>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-box" id="modalBox"></div></div>
+<script>
+(function(){
+    const G=['王者荣耀','英雄联盟','永劫无间','和平精英','蛋仔派对','三角洲行动','超自然行动组','第五人格','光遇','无畏契约','金铲铲之战','原神'];
+    const S=['语音聊天','文字聊天','哄睡','受气包','一日女友/男友','点歌','心理疏导','传声筒','其他(团内活动)'];
+    let GP=JSON.parse(localStorage.getItem('gp')||'{}'); if(!Object.keys(GP).length) G.forEach(g=>GP[g]={普通陪:40,技术陪:60,娱乐陪:35});
+    let SP=JSON.parse(localStorage.getItem('sp')||'{"语音聊天":30,"文字聊天":20,"哄睡":50,"受气包":40,"一日女友/男友":200,"点歌":15,"心理疏导":60,"传声筒":25,"其他(团内活动)":50}');
+    let club=JSON.parse(localStorage.getItem('club')||'{"name":"SY·森野club","logo":""}');
+    let contact=localStorage.getItem('contact')||'商务合作 19729410115';
+    let announce=JSON.parse(localStorage.getItem('announce')||'{"text":"欢迎！","enabled":true}');
+    let users=JSON.parse(localStorage.getItem('u')||'[{"id":"boss1","username":"boss","password":"123456","nickname":"陈老板","gender":"男","age":28,"role":"boss","wechat":"boss123"},{"id":"p1","username":"player","password":"123456","nickname":"草莓酱","gender":"女","age":22,"role":"player","game":"王者荣耀","category":"娱乐陪","price":35,"wechat":"berry123","services":["语音聊天"],"status":"approved"},{"id":"admin","username":"admin","password":"123456","role":"admin"}]');
+    let orders=JSON.parse(localStorage.getItem('o')||'[]');
+    let ads=JSON.parse(localStorage.getItem('ad')||'[{"content":"🎉 新用户首单立减"},{"content":"🔥 大神在线秒接单"}]');
+    let qr=localStorage.getItem('qr')||'';
+    let cur=null, sel=[];
+    function save(){ localStorage.setItem('gp',JSON.stringify(GP)); localStorage.setItem('sp',JSON.stringify(SP)); localStorage.setItem('club',JSON.stringify(club)); localStorage.setItem('contact',contact); localStorage.setItem('announce',JSON.stringify(announce)); localStorage.setItem('u',JSON.stringify(users)); localStorage.setItem('o',JSON.stringify(orders)); localStorage.setItem('ad',JSON.stringify(ads)); localStorage.setItem('qr',qr); }
+    function updUI(){ document.getElementById('loginClubName').textContent=club.name; document.getElementById('clubName').textContent=club.name; if(club.logo){ document.getElementById('headerLogo').src=club.logo; document.getElementById('headerLogo').style.display='block'; document.getElementById('defaultIcon').style.display='none'; document.getElementById('loginLogo').innerHTML='<img src="'+club.logo+'" style="width:60px;height:60px;border-radius:16px">'; } }
+    const lp=document.getElementById('loginPage'), ma=document.getElementById('mainApp'), ac=document.getElementById('appContent'), mod=document.getElementById('modal'), mb=document.getElementById('modalBox');
+    function showModal(h){ mb.innerHTML=h; mod.classList.remove('hidden'); }
+    function closeModal(){ mod.classList.add('hidden'); }
+    mod.onclick=e=>{ if(e.target===mod) closeModal(); };
+    document.getElementById('copyWxBtn').onclick=()=>{ let w=document.getElementById('regWx'); w.select(); document.execCommand('copy'); alert('已复制'); };
+    document.getElementById('showLogin').onclick=()=>{ document.getElementById('loginBox').classList.remove('hidden'); document.getElementById('regBox').classList.add('hidden'); };
+    document.getElementById('showReg').onclick=()=>{ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('regBox').classList.remove('hidden'); };
+    document.getElementById('regRole').onchange=function(){
+        if(this.value==='player'){
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('regGame').innerHTML=G.map(g=>'<option>'+g+'</option>').join('');
+            document.getElementById('serviceTags').innerHTML=S.map(s=>'<span class="service-tag" data-s="'+s+'">'+s+' ¥'+(SP[s]||30)+'</span>').join('');
+            document.querySelectorAll('.service-tag').forEach(t=>t.onclick=function(){
+                this.classList.toggle('selected'); let v=this.dataset.s;
+                if(this.classList.contains('selected')){ if(!sel.includes(v)) sel.push(v); }
+                else sel=sel.filter(x=>x!==v);
+            });
+        }else document.getElementById('gameArea').classList.add('hidden');
+    };
+    document.getElementById('loginBtn').onclick=()=>{
+        let u=users.find(u=>u.username===document.getElementById('loginUser').value&&u.password===document.getElementById('loginPwd').value);
+        if(!u){ alert('账号密码错误'); return; }
+        if(u.role==='player'&&u.status!=='approved'){ alert('资料审核中'); return; }
+        cur=u; lp.classList.add('hidden'); ma.classList.remove('hidden'); updUI();
+        if(announce.enabled) alert('📢 '+announce.text);
+        if(cur.role==='admin'){ document.getElementById('bottomNav').style.display='none'; renderAdmin(); }
+        else{ document.getElementById('bottomNav').style.display='flex'; renderHome(); }
+    };
+    document.getElementById('regBtn').onclick=()=>{
+        let wx=document.getElementById('regWx').value; if(!wx){ alert('请填写微信号'); return; }
+        let un=document.getElementById('regUser').value; if(!un||users.find(u=>u.username===un)){ alert('账号无效'); return; }
+        let role=document.getElementById('regRole').value, age=parseInt(document.getElementById('regAge').value); if(age<16||age>60){ alert('年龄16-60'); return; }
+        let u={ id:'u'+Date.now(), username:un, password:document.getElementById('regPwd').value, nickname:document.getElementById('regNick').value, gender:document.getElementById('regGender').value, age, bio:document.getElementById('regBio').value, role, wechat:wx };
+        if(role==='player'){ u.game=document.getElementById('regGame').value; u.category=document.getElementById('regCategory').value; u.price=GP[u.game]?.[u.category]||40; u.services=[...sel]; u.status='pending'; alert('注册成功，等待审核'); }
+        else alert('注册成功');
+        users.push(u); save(); document.getElementById('showLogin').click(); document.getElementById('loginUser').value=un;
+    };
+    document.getElementById('forgotBtn').onclick=()=>{
+        showModal('<h3>重置密码</h3><input id="rstUser" class="input" placeholder="账号"><input id="rstPwd" class="input" value="123456"><button class="btn" style="width:100%" id="doRst">确认</button>');
+        document.getElementById('doRst').onclick=()=>{ let u=users.find(u=>u.username===document.getElementById('rstUser').value); if(u){ u.password=document.getElementById('rstPwd').value; save(); alert('已重置'); closeModal(); } else alert('账号不存在'); };
+    };
+    document.getElementById('logoutBtn').onclick=()=>{ ma.classList.add('hidden'); lp.classList.remove('hidden'); };
+    document.getElementById('announceBtn').onclick=()=>alert('📢 '+announce.text);
+    document.getElementById('backBtn').onclick=()=>renderPage('home');
+    function renderPage(p){
+        document.querySelectorAll('.nav-item').forEach(n=>{ n.classList.remove('active'); if(n.dataset.page===p) n.classList.add('active'); });
+        if(p==='home') renderHome(); else if(p==='orders') renderOrders(); else renderProfile();
+    }
+    document.querySelectorAll('.nav-item').forEach(n=>n.onclick=function(){ renderPage(this.dataset.page); });
+
+    function renderHome(){
+        if(cur.role==='boss'){
+            let players=users.filter(u=>u.role==='player'&&u.status==='approved');
+            ac.innerHTML='<div class="contact-bar">📞 '+contact+'</div><div><b>游戏:</b> '+G.map(g=>'<span class="badge" data-game="'+g+'">'+g+'</span>').join('')+'</div><div><b>服务:</b> '+S.map(s=>'<span class="badge" data-service="'+s+'">'+s+'</span>').join('')+'</div><h3>🎧 推荐陪玩</h3><div id="playerList">'+players.map(p=>'<div class="card"><div style="display:flex;gap:12px"><div class="avatar">'+(p.avatar?'<img src="'+p.avatar+'">':(p.gender==='女'?'👧':'👨'))+'</div><div style="flex:1"><b>'+p.nickname+'</b> '+p.age+'岁 '+p.gender+'<br>'+p.game+'·'+p.category+' ¥'+p.price+'/时<br>'+(p.services||[]).map(s=>'<span class="badge">'+s+'</span>').join('')+'</div><button class="btn" data-order="'+p.id+'">下单</button></div></div>').join('')+'</div>';
+            document.querySelectorAll('[data-game]').forEach(b=>b.onclick=function(){ let g=this.dataset.game, f=players.filter(p=>p.game===g); document.querySelectorAll('[data-game]').forEach(bb=>bb.classList.remove('active')); this.classList.add('active'); document.getElementById('playerList').innerHTML=f.map(p=>'<div class="card"><div style="display:flex;gap:12px"><div class="avatar">'+(p.avatar?'<img src="'+p.avatar+'">':(p.gender==='女'?'👧':'👨'))+'</div><div style="flex:1"><b>'+p.nickname+'</b> '+p.age+'岁<br>'+p.game+'·'+p.category+' ¥'+p.price+'/时<br>'+(p.services||[]).map(s=>'<span class="badge">'+s+'</span>').join('')+'</div><button class="btn" data-order="'+p.id+'">下单</button></div></div>').join(''); document.querySelectorAll('[data-order]').forEach(btn=>btn.onclick=function(){ placeOrder(this.dataset.order); }); });
+            document.querySelectorAll('[data-service]').forEach(b=>b.onclick=function(){ let s=this.dataset.service, f=players.filter(p=>p.services&&p.services.includes(s)); document.querySelectorAll('[data-service]').forEach(bb=>bb.classList.remove('active')); this.classList.add('active'); document.getElementById('playerList').innerHTML=f.map(p=>'<div class="card"><div style="display:flex;gap:12px"><div class="avatar">'+(p.avatar?'<img src="'+p.avatar+'">':(p.gender==='女'?'👧':'👨'))+'</div><div style="flex:1"><b>'+p.nickname+'</b> '+p.age+'岁<br>'+p.game+'·'+p.category+' ¥'+p.price+'/时<br>'+(p.services||[]).map(s=>'<span class="badge">'+s+'</span>').join('')+'</div><button class="btn" data-order="'+p.id+'">下单</button></div></div>').join(''); document.querySelectorAll('[data-order]').forEach(btn=>btn.onclick=function(){ placeOrder(this.dataset.order); }); });
+            document.querySelectorAll('[data-order]').forEach(b=>b.onclick=function(){ placeOrder(this.dataset.order); });
+        }else{
+            let w=orders.filter(o=>o.status==='waiting'), o=orders.filter(o=>o.playerId===cur.id&&o.status==='ongoing');
+            ac.innerHTML='<div class="contact-bar">📞 '+contact+'</div><h3>📋 可接订单</h3>'+w.map(o=>'<div class="card"><b>'+o.game+'</b> ¥'+o.price+'<br>'+o.bossName+'<br><button class="btn" data-accept="'+o.id+'">接单</button></div>').join('')+'<h3>⏳ 进行中</h3>'+o.map(o=>'<div class="card"><b>'+o.game+'</b> '+o.hours+'h<br><button class="btn-outline" data-complete="'+o.id+'">完成</button></div>').join('');
+            document.querySelectorAll('[data-accept]').forEach(b=>b.onclick=function(){ let o=orders.find(o=>o.id===this.dataset.accept); if(o){ o.status='ongoing'; o.playerId=cur.id; save(); renderHome(); } });
+            document.querySelectorAll('[data-complete]').forEach(b=>b.onclick=function(){ let o=orders.find(o=>o.id===this.dataset.complete); if(o){ o.status='completed'; save(); renderHome(); } });
+        }
+    }
+    function placeOrder(pid){ let p=users.find(u=>u.id===pid); showModal('<h3>下单</h3><p>'+p.nickname+' · '+p.game+' · '+p.category+' · ¥'+p.price+'/时</p><input id="hours" class="input" type="number" value="2"><div>'+(qr?'<img src="'+qr+'" style="width:150px">':'暂无收款码')+'</div><button class="btn" style="width:100%" id="cfm">确认</button>'); document.getElementById('cfm').onclick=()=>{ let h=parseInt(document.getElementById('hours').value); orders.push({ id:'o'+Date.now(), bossId:cur.id, bossName:cur.nickname, playerId:p.id, playerName:p.nickname, game:p.game, hours:h, price:p.price*h, status:'pending_pay' }); save(); closeModal(); alert('已提交'); renderHome(); }; }
+    function renderOrders(){ let my=orders.filter(o=>o.bossId===cur.id||o.playerId===cur.id); ac.innerHTML='<h3>我的订单</h3>'+my.reverse().map(o=>'<div class="card"><b>'+o.game+'</b> '+o.status+' ¥'+o.price+'</div>').join(''); }
+    function renderProfile(){
+        ac.innerHTML='<div class="card" style="display:flex"><div class="avatar" id="avt">'+(cur.avatar?'<img src="'+cur.avatar+'">':'👤')+'</div><div><b>'+cur.nickname+'</b></div><input type="file" id="avtInp" accept="image/*" style="display:none"></div><input id="eNick" class="input" value="'+cur.nickname+'"><select id="eGen" class="input"><option '+(cur.gender==='男'?'selected':'')+'>男</option><option '+(cur.gender==='女'?'selected':'')+'>女</option></select><input id="eAge" class="input" type="number" value="'+cur.age+'"><textarea id="eBio" class="input">'+(cur.bio||'')+'</textarea><div class="wx-copy"><input id="eWx" class="input" value="'+(cur.wechat||'')+'"><button class="btn-outline btn-small" id="copyProfileWx"><i class="far fa-copy"></i></button></div>'+(cur.role==='player'?'<select id="eGame" class="input">'+G.map(g=>'<option '+(cur.game===g?'selected':'')+'>'+g+'</option>').join('')+'</select><select id="eCat" class="input"><option '+(cur.category==='普通陪'?'selected':'')+'>普通陪</option><option '+(cur.category==='技术陪'?'selected':'')+'>技术陪</option><option '+(cur.category==='娱乐陪'?'selected':'')+'>娱乐陪</option></select><div>'+S.map(s=>'<span class="service-tag '+(cur.services?.includes(s)?'selected':'')+'" data-s="'+s+'">'+s+'</span>').join('')+'</div>':'')+'<button class="btn" style="width:100%" id="saveProfile">保存</button><button class="btn-outline" style="width:100%;margin-top:10px" id="chPwd">修改密码</button>';
+        if(cur.role==='player') document.querySelectorAll('.service-tag').forEach(t=>t.onclick=function(){ this.classList.toggle('selected'); });
+        document.getElementById('copyProfileWx').onclick=()=>{ let w=document.getElementById('eWx'); w.select(); document.execCommand('copy'); alert('已复制'); };
+        document.getElementById('avt').onclick=()=>document.getElementById('avtInp').click();
+        document.getElementById('avtInp').onchange=e=>{ let f=e.target.files[0]; if(f){ let r=new FileReader(); r.onload=ev=>{ cur.avatar=ev.target.result; save(); renderProfile(); }; r.readAsDataURL(f); } };
+        document.getElementById('saveProfile').onclick=()=>{ cur.nickname=document.getElementById('eNick').value; cur.gender=document.getElementById('eGen').value; cur.age=parseInt(document.getElementById('eAge').value); cur.bio=document.getElementById('eBio').value; cur.wechat=document.getElementById('eWx').value; if(cur.role==='player'){ cur.game=document.getElementById('eGame').value; cur.category=document.getElementById('eCat').value; cur.price=GP[cur.game]?.[cur.category]||40; cur.services=[]; document.querySelectorAll('.service-tag.selected').forEach(t=>cur.services.push(t.dataset.s)); } save(); alert('已保存'); renderProfile(); };
+        document.getElementById('chPwd').onclick=()=>{ showModal('<h3>修改密码</h3><input id="newPwd" class="input" value="123456"><button class="btn" style="width:100%" id="cfmPwd">确认</button>'); document.getElementById('cfmPwd').onclick=()=>{ cur.password=document.getElementById('newPwd').value; save(); alert('已修改'); closeModal(); }; };
+    }
+
+    function renderAdmin(){
+        let gr=''; G.forEach(g=>{ gr+='<tr><td>'+g+'</td><td><input id="p_'+g+'_普通陪" value="'+(GP[g]?.普通陪||40)+'"></td><td><input id="p_'+g+'_技术陪" value="'+(GP[g]?.技术陪||60)+'"></td><td><input id="p_'+g+'_娱乐陪" value="'+(GP[g]?.娱乐陪||35)+'"></td></tr>'; });
+        let sr=''; S.forEach(s=>{ sr+='<tr><td>'+s+'</td><td><input id="p_'+s+'" value="'+(SP[s]||30)+'"> 元/次</td></tr>'; });
+        let pending=users.filter(u=>u.role==='player'&&u.status==='pending');
+        ac.innerHTML='<h3>🛡️ 管理后台</h3>'+
+            '<div class="card"><h4>🏢 俱乐部</h4><input id="clubNameInp" class="input" value="'+club.name+'"><button class="btn-outline" id="uploadLogo">上传Logo</button><input type="file" id="logoInp" accept="image/*" style="display:none">'+(club.logo?'<img src="'+club.logo+'" style="width:60px">':'')+'<button class="btn" style="width:100%" id="saveClub">保存</button></div>'+
+            '<div class="card"><h4>📞 商务合作</h4><input id="contactInp" class="input" value="'+contact+'"><button class="btn" style="width:100%" id="saveContact">保存</button></div>'+
+            '<div class="card"><h4>📢 公告</h4><textarea id="announceText" class="input">'+announce.text+'</textarea><label><input type="checkbox" id="announceEnabled" '+(announce.enabled?'checked':'')+'>启用</label><button class="btn" style="width:100%" id="saveAnnounce">保存</button></div>'+
+            '<div class="card"><h4>👥 陪玩审核</h4>'+pending.map(p=>'<div><b>'+p.nickname+'</b> '+p.game+'·'+p.category+'<br>微信:'+p.wechat+'<br><button class="btn-small btn" data-approve="'+p.id+'">通过</button> <button class="btn-small btn-outline" data-reject="'+p.id+'">拒绝</button></div>').join('')+'</div>'+
+            '<div class="card"><h4>🎮 游戏价格</h4><table>'+gr+'</table><button class="btn" style="width:100%" id="saveGamePrice">保存游戏价格</button></div>'+
+            '<div class="card"><h4>💬 服务价格</h4><table>'+sr+'</table><button class="btn" style="width:100%" id="saveServicePrice">保存服务价格</button></div>'+
+            '<div class="card"><h4>💳 收款码</h4>'+(qr?'<img src="'+qr+'" style="width:100px">':'暂无')+'<br><input type="file" id="qrInp"><button class="btn" style="width:100%" id="saveQr">上传</button></div>'+
+            '<div class="card"><h4>🖼️ 广告</h4><button class="btn-outline" id="addTxt">+文字</button> <button class="btn-outline" id="addImg">+图片</button><input type="file" id="imgInp" accept="image/*" style="display:none">'+ads.map((a,i)=>'<div>'+a.content+' <button data-del="'+i+'" style="color:red">删除</button></div>').join('')+'</div>'+
+            '<div class="card"><h4>📊 待确认</h4>'+orders.filter(o=>o.status==='pending_pay').map(o=>'<div><b>'+o.game+'</b> ¥'+o.price+' <button data-cfm="'+o.id+'" class="btn">确认</button></div>').join('')+'</div>';
+        document.getElementById('uploadLogo').onclick=()=>document.getElementById('logoInp').click();
+        document.getElementById('logoInp').onchange=e=>{ let f=e.target.files[0]; if(f){ let r=new FileReader(); r.onload=ev=>{ club.logo=ev.target.result; save(); renderAdmin(); }; r.readAsDataURL(f); } };
+        document.getElementById('saveClub').onclick=()=>{ club.name=document.getElementById('clubNameInp').value; save(); updUI(); };
+        document.getElementById('saveContact').onclick=()=>{ contact=document.getElementById('contactInp').value; save(); };
+        document.getElementById('saveAnnounce').onclick=()=>{ announce.text=document.getElementById('announceText').value; announce.enabled=document.getElementById('announceEnabled').checked; save(); };
+        document.getElementById('saveGamePrice').onclick=()=>{ G.forEach(g=>{ GP[g]={普通陪:parseInt(document.getElementById('p_'+g+'_普通陪').value),技术陪:parseInt(document.getElementById('p_'+g+'_技术陪').value),娱乐陪:parseInt(document.getElementById('p_'+g+'_娱乐陪').value)}; }); save(); alert('游戏价格已保存'); };
+        document.getElementById('saveServicePrice').onclick=()=>{ S.forEach(s=>{ SP[s]=parseInt(document.getElementById('p_'+s).value); }); save(); alert('服务价格已保存'); };
+        document.getElementById('saveQr').onclick=()=>{ let f=document.getElementById('qrInp').files[0]; if(f){ let r=new FileReader(); r.onload=ev=>{ qr=ev.target.result; save(); renderAdmin(); }; r.readAsDataURL(f); } };
+        document.getElementById('addTxt').onclick=()=>{ let t=prompt('广告文字'); if(t){ ads.push({content:t}); save(); renderAdmin(); } };
+        document.getElementById('addImg').onclick=()=>document.getElementById('imgInp').click();
+        document.getElementById('imgInp').onchange=e=>{ let f=e.target.files[0]; if(f){ let r=new FileReader(); r.onload=ev=>{ ads.push({content:'[图片]',src:ev.target.result}); save(); renderAdmin(); }; r.readAsDataURL(f); } };
+        document.querySelectorAll('[data-del]').forEach(b=>b.onclick=function(){ ads.splice(this.dataset.del,1); save(); renderAdmin(); });
+        document.querySelectorAll('[data-approve]').forEach(b=>b.onclick=function(){ let u=users.find(u=>u.id===this.dataset.approve); if(u){ u.status='approved'; save(); renderAdmin(); } });
+        document.querySelectorAll('[data-reject]').forEach(b=>b.onclick=function(){ users=users.filter(u=>u.id!==this.dataset.reject); save(); renderAdmin(); });
+        document.querySelectorAll('[data-cfm]').forEach(b=>b.onclick=function(){ let o=orders.find(o=>o.id===this.dataset.cfm); if(o){ o.status='waiting'; save(); renderAdmin(); } });
+    }
+})();
+</script>
+</body>
+</html>
